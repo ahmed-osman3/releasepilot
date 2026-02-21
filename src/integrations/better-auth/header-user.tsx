@@ -1,43 +1,53 @@
 import { authClient } from '@/lib/auth-client'
-import { Link } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 
 export default function BetterAuthHeader() {
+  const navigate = useNavigate()
   const { data: session, isPending } = authClient.useSession()
 
   if (isPending) {
     return (
-      <div className="h-8 w-8 bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+      <div className="h-8 w-full rounded-lg bg-muted/50 animate-pulse" />
     )
   }
 
   if (session?.user) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         {session.user.image ? (
-          <img src={session.user.image} alt="" className="h-8 w-8" />
+          <img
+            src={session.user.image}
+            alt=""
+            className="size-7 rounded-full object-cover ring-1 ring-border"
+          />
         ) : (
-          <div className="h-8 w-8 bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-            <span className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
+          <div className="size-7 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <span className="text-[11px] font-semibold text-primary">
               {session.user.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           </div>
         )}
-        <button
-          onClick={() => authClient.signOut()}
-          className="flex-1 h-9 px-4 text-sm font-medium bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
-        >
-          Sign out
-        </button>
+        <div className="flex-1 min-w-0">
+          <p className="text-[12px] font-medium text-foreground truncate leading-tight">
+            {session.user.name || 'User'}
+          </p>
+          <button
+            onClick={() => authClient.signOut()}
+            className="text-[11px] text-muted-foreground hover:text-primary transition-colors"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
     )
   }
 
   return (
-    <Link
-      to="/demo/better-auth"
-      className="h-9 px-4 text-sm font-medium bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors inline-flex items-center"
+    <button
+      className="w-full h-8 text-[12px] font-medium rounded-lg bg-primary/10 text-primary border border-primary/20 hover:bg-primary/15 transition-colors"
+      onClick={() => navigate({ to: '/auth' })}
     >
       Sign in
-    </Link>
+    </button>
   )
 }

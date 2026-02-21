@@ -1,247 +1,301 @@
-Welcome to your new TanStack Start app! 
+🚀 Release Pilot
 
-# Getting Started
+Autonomous App Store release management.
 
-To run this application:
+Release Pilot monitors your App Store submissions, detects rejection issues, generates fixes, opens pull requests, and resubmits — until your app is approved.
 
-```bash
-pnpm install
-pnpm dev
-```
+No manual back-and-forth.
+No release anxiety.
+No repetitive metadata fixes.
 
-# Building For Production
+🧠 What Is Release Pilot?
 
-To build this application for production:
+Release Pilot is a release intelligence layer for iOS apps.
 
-```bash
-pnpm build
-```
+It connects to:
 
-## Testing
+App Store Connect
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+GitHub
 
-```bash
-pnpm test
-```
+Your existing CI pipeline
 
-## Styling
+Then it continuously monitors your submission workflow and automatically resolves supported rejection issues.
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+Release Pilot does not replace your build system.
+It orchestrates and repairs your release loop.
 
-### Removing Tailwind CSS
+🎯 The Problem
 
-If you prefer not to use Tailwind CSS:
+App Store releases are fragile.
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `pnpm add @tailwindcss/vite tailwindcss --dev`
+A typical rejection cycle looks like:
 
-## Linting & Formatting
+Submit build
 
+Wait hours or days
 
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
+Get rejected
 
-```bash
-pnpm lint
-pnpm format
-pnpm check
-```
+Manually interpret Apple’s message
 
+Update metadata or code
 
-## Shadcn
+Open PR
 
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
+Merge
 
-```bash
-pnpm dlx shadcn@latest add button
-```
+Rebuild
 
+Resubmit
 
-## Setting up Better Auth
+Repeat
 
-1. Generate and set the `BETTER_AUTH_SECRET` environment variable in your `.env.local`:
+This process:
 
-   ```bash
-   npx @better-auth/cli secret
-   ```
+Wastes engineering time
 
-2. Visit the [Better Auth documentation](https://www.better-auth.com) to unlock the full potential of authentication in your app.
+Breaks release momentum
 
-### Adding a Database (Optional)
+Creates anxiety
 
-Better Auth can work in stateless mode, but to persist user data, add a database:
+Slows down shipping
 
-```typescript
-// src/lib/auth.ts
-import { betterAuth } from "better-auth";
-import { Pool } from "pg";
+Most of these rejections are repetitive and deterministic.
 
-export const auth = betterAuth({
-  database: new Pool({
-    connectionString: process.env.DATABASE_URL,
-  }),
-  // ... rest of config
-});
-```
+Release Pilot automates that loop.
 
-Then run migrations:
+⚙️ What It Does
 
-```bash
-npx @better-auth/cli migrate
-```
+Release Pilot continuously:
 
+Monitors submission status in App Store Connect
 
+Detects rejections
 
-## Routing
+Classifies common rejection types
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+Generates structured fixes
 
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
+Opens pull requests when code changes are required
 
-```tsx
-import { Link } from "@tanstack/react-router";
-```
+Waits for merge
 
-Then anywhere in your JSX you can use it like so:
+Detects new builds
 
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
+Resubmits automatically
 
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
+It continues until the submission is approved.
 
-## Server Functions
+🔁 Example Flow
 
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
+Submission rejected for:
 
-```tsx
-import { createServerFn } from '@tanstack/react-start'
+ITMS-90683: Missing Purpose String
 
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
+Release Pilot:
 
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
+Detects rejection
 
-## API Routes
+Classifies issue
 
-You can create API routes by using the `server` property in your route definitions:
+Generates fix for Info.plist
 
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
+Opens PR on GitHub
 
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
+Waits for merge
 
-## Data Fetching
+Detects new build upload
 
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
+Resubmits to App Store Connect
 
-For example:
+Monitors review outcome
 
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
+All actions are visible in the dashboard timeline.
 
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
+🖥 Dashboard Overview
 
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
+Release Pilot provides a structured, infra-grade dashboard with:
 
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
+Hero Release Status
 
-# Demo files
+Current state
 
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
+Next expected action
 
-# Learn More
+Automation status
 
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+Release Timeline
 
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+Build detection
+
+Submission
+
+Rejection
+
+Fix generation
+
+PR status
+
+Resubmission
+
+Approval
+
+Automation Activity Feed
+
+Structured log of system actions
+
+Transparent decision trail
+
+GitHub Integration Status
+
+Repo connected
+
+Branch monitored
+
+PR links
+
+Raw App Store Response
+
+Full rejection message
+
+Audit transparency
+
+The dashboard is designed for clarity, traceability, and control.
+
+🔌 Requirements
+
+Release Pilot assumes:
+
+Your repository is hosted on GitHub
+
+Merging to your main branch triggers an automated CI build
+
+Your CI uploads builds to App Store Connect
+
+Release Pilot does not:
+
+Run your builds
+
+Manage code signing
+
+Replace your CI system
+
+It integrates with what you already use.
+
+🧩 Supported Projects
+
+Release Pilot works with any iOS app that:
+
+Uploads builds to App Store Connect
+
+Uses GitHub
+
+Has automated CI
+
+This includes:
+
+Native iOS apps
+
+React Native apps
+
+Expo (managed or bare)
+
+Any framework that compiles to iOS and uses automated builds
+
+🔒 Security
+
+Release Pilot:
+
+Uses scoped GitHub permissions
+
+Encrypts App Store API credentials
+
+Does not persist source code
+
+Only modifies files required to resolve specific classified issues
+
+All automated actions are:
+
+Logged
+
+Traceable
+
+Reversible
+
+Reviewable via pull request
+
+You remain in control.
+
+🏗 Architecture Overview
+
+Release Pilot is built around a deterministic release state machine:
+
+MONITORING
+→ REJECTED
+→ ISSUE_CLASSIFIED
+→ FIX_GENERATED
+→ PR_OPENED
+→ WAITING_FOR_MERGE
+→ RESUBMITTING
+→ APPROVED
+
+Automation decisions are structured and constrained — not freeform AI agents.
+
+The system is:
+
+Event-driven
+
+Deterministic
+
+Auditable
+
+Designed for reliability
+
+🚦 MVP Scope
+
+Current supported automation includes:
+
+Missing permission strings
+
+Metadata inconsistencies
+
+Missing localizations
+
+Common App Store rejection patterns
+
+Future roadmap includes:
+
+Android Play Store support
+
+Expanded rejection classification
+
+Multi-repo support
+
+Team roles & permissions
+
+Advanced release analytics
+
+💡 Philosophy
+
+Release Pilot is not “AI for releases.”
+
+It is:
+
+A release reliability layer.
+
+It reduces friction, preserves momentum, and eliminates repetitive rejection loops — while keeping developers in control.
+
+🏁 Vision
+
+Shipping should feel:
+
+Predictable
+
+Structured
+
+Low-anxiety
+
+Fast
+
+Release Pilot makes App Store releases autonomous — without sacrificing transparency.

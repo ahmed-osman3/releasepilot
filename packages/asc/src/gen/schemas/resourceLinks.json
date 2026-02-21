@@ -1,0 +1,5 @@
+{
+  "type": "object",
+  "properties": { "self": { "type": "string", "format": "uri-reference" } },
+  "x-readme-ref-name": "ResourceLinks"
+}

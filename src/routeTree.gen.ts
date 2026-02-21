@@ -9,30 +9,55 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AppsRouteRouteImport } from './routes/apps/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
-import { Route as DemoBetterAuthRouteImport } from './routes/demo/better-auth'
+import { Route as AppsIndexRouteImport } from './routes/apps/index'
+import { Route as AppsConnectRouteImport } from './routes/apps/connect'
+import { Route as AppsAddRouteImport } from './routes/apps/add'
+import { Route as ApiGithubWebhooksRouteImport } from './routes/api/github/webhooks'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiAscSplatRouteImport } from './routes/api/asc/$'
+import { Route as ApiGithubInstallStartRouteImport } from './routes/api/github/install/start'
+import { Route as ApiGithubInstallCallbackRouteImport } from './routes/api/github/install/callback'
+import { Route as AppsAppIdSubmissionsHeaderRouteRouteImport } from './routes/apps/$appId/submissions/_header/route'
+import { Route as AppsAppIdSubmissionsHeaderIndexRouteImport } from './routes/apps/$appId/submissions/_header/index'
+import { Route as AppsAppIdSubmissionsHeaderVersionIdIndexRouteImport } from './routes/apps/$appId/submissions/_header/$versionId/index'
+import { Route as AppsAppIdSubmissionsHeaderVersionIdFixRouteImport } from './routes/apps/$appId/submissions/_header/$versionId/fix'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppsRouteRoute = AppsRouteRouteImport.update({
+  id: '/apps',
+  path: '/apps',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => rootRouteImport,
+const AppsIndexRoute = AppsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppsRouteRoute,
 } as any)
-const DemoDrizzleRoute = DemoDrizzleRouteImport.update({
-  id: '/demo/drizzle',
-  path: '/demo/drizzle',
-  getParentRoute: () => rootRouteImport,
+const AppsConnectRoute = AppsConnectRouteImport.update({
+  id: '/connect',
+  path: '/connect',
+  getParentRoute: () => AppsRouteRoute,
 } as any)
-const DemoBetterAuthRoute = DemoBetterAuthRouteImport.update({
-  id: '/demo/better-auth',
-  path: '/demo/better-auth',
+const AppsAddRoute = AppsAddRouteImport.update({
+  id: '/add',
+  path: '/add',
+  getParentRoute: () => AppsRouteRoute,
+} as any)
+const ApiGithubWebhooksRoute = ApiGithubWebhooksRouteImport.update({
+  id: '/api/github/webhooks',
+  path: '/api/github/webhooks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -40,63 +65,176 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAscSplatRoute = ApiAscSplatRouteImport.update({
+  id: '/api/asc/$',
+  path: '/api/asc/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGithubInstallStartRoute = ApiGithubInstallStartRouteImport.update({
+  id: '/api/github/install/start',
+  path: '/api/github/install/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGithubInstallCallbackRoute =
+  ApiGithubInstallCallbackRouteImport.update({
+    id: '/api/github/install/callback',
+    path: '/api/github/install/callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AppsAppIdSubmissionsHeaderRouteRoute =
+  AppsAppIdSubmissionsHeaderRouteRouteImport.update({
+    id: '/$appId/submissions/_header',
+    path: '/$appId/submissions',
+    getParentRoute: () => AppsRouteRoute,
+  } as any)
+const AppsAppIdSubmissionsHeaderIndexRoute =
+  AppsAppIdSubmissionsHeaderIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppsAppIdSubmissionsHeaderRouteRoute,
+  } as any)
+const AppsAppIdSubmissionsHeaderVersionIdIndexRoute =
+  AppsAppIdSubmissionsHeaderVersionIdIndexRouteImport.update({
+    id: '/$versionId/',
+    path: '/$versionId/',
+    getParentRoute: () => AppsAppIdSubmissionsHeaderRouteRoute,
+  } as any)
+const AppsAppIdSubmissionsHeaderVersionIdFixRoute =
+  AppsAppIdSubmissionsHeaderVersionIdFixRouteImport.update({
+    id: '/$versionId/fix',
+    path: '/$versionId/fix',
+    getParentRoute: () => AppsAppIdSubmissionsHeaderRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/demo/better-auth': typeof DemoBetterAuthRoute
-  '/demo/drizzle': typeof DemoDrizzleRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/apps': typeof AppsRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/apps/add': typeof AppsAddRoute
+  '/apps/connect': typeof AppsConnectRoute
+  '/apps/': typeof AppsIndexRoute
+  '/api/asc/$': typeof ApiAscSplatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/github/webhooks': typeof ApiGithubWebhooksRoute
+  '/apps/$appId/submissions': typeof AppsAppIdSubmissionsHeaderRouteRouteWithChildren
+  '/api/github/install/callback': typeof ApiGithubInstallCallbackRoute
+  '/api/github/install/start': typeof ApiGithubInstallStartRoute
+  '/apps/$appId/submissions/': typeof AppsAppIdSubmissionsHeaderIndexRoute
+  '/apps/$appId/submissions/$versionId/fix': typeof AppsAppIdSubmissionsHeaderVersionIdFixRoute
+  '/apps/$appId/submissions/$versionId/': typeof AppsAppIdSubmissionsHeaderVersionIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/demo/better-auth': typeof DemoBetterAuthRoute
-  '/demo/drizzle': typeof DemoDrizzleRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/auth': typeof AuthRoute
+  '/apps/add': typeof AppsAddRoute
+  '/apps/connect': typeof AppsConnectRoute
+  '/apps': typeof AppsIndexRoute
+  '/api/asc/$': typeof ApiAscSplatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/github/webhooks': typeof ApiGithubWebhooksRoute
+  '/api/github/install/callback': typeof ApiGithubInstallCallbackRoute
+  '/api/github/install/start': typeof ApiGithubInstallStartRoute
+  '/apps/$appId/submissions': typeof AppsAppIdSubmissionsHeaderIndexRoute
+  '/apps/$appId/submissions/$versionId/fix': typeof AppsAppIdSubmissionsHeaderVersionIdFixRoute
+  '/apps/$appId/submissions/$versionId': typeof AppsAppIdSubmissionsHeaderVersionIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/demo/better-auth': typeof DemoBetterAuthRoute
-  '/demo/drizzle': typeof DemoDrizzleRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/apps': typeof AppsRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/apps/add': typeof AppsAddRoute
+  '/apps/connect': typeof AppsConnectRoute
+  '/apps/': typeof AppsIndexRoute
+  '/api/asc/$': typeof ApiAscSplatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/github/webhooks': typeof ApiGithubWebhooksRoute
+  '/apps/$appId/submissions/_header': typeof AppsAppIdSubmissionsHeaderRouteRouteWithChildren
+  '/api/github/install/callback': typeof ApiGithubInstallCallbackRoute
+  '/api/github/install/start': typeof ApiGithubInstallStartRoute
+  '/apps/$appId/submissions/_header/': typeof AppsAppIdSubmissionsHeaderIndexRoute
+  '/apps/$appId/submissions/_header/$versionId/fix': typeof AppsAppIdSubmissionsHeaderVersionIdFixRoute
+  '/apps/$appId/submissions/_header/$versionId/': typeof AppsAppIdSubmissionsHeaderVersionIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/demo/better-auth'
-    | '/demo/drizzle'
-    | '/demo/tanstack-query'
+    | '/apps'
+    | '/auth'
+    | '/apps/add'
+    | '/apps/connect'
+    | '/apps/'
+    | '/api/asc/$'
     | '/api/auth/$'
+    | '/api/github/webhooks'
+    | '/apps/$appId/submissions'
+    | '/api/github/install/callback'
+    | '/api/github/install/start'
+    | '/apps/$appId/submissions/'
+    | '/apps/$appId/submissions/$versionId/fix'
+    | '/apps/$appId/submissions/$versionId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/demo/better-auth'
-    | '/demo/drizzle'
-    | '/demo/tanstack-query'
+    | '/auth'
+    | '/apps/add'
+    | '/apps/connect'
+    | '/apps'
+    | '/api/asc/$'
     | '/api/auth/$'
+    | '/api/github/webhooks'
+    | '/api/github/install/callback'
+    | '/api/github/install/start'
+    | '/apps/$appId/submissions'
+    | '/apps/$appId/submissions/$versionId/fix'
+    | '/apps/$appId/submissions/$versionId'
   id:
     | '__root__'
     | '/'
-    | '/demo/better-auth'
-    | '/demo/drizzle'
-    | '/demo/tanstack-query'
+    | '/apps'
+    | '/auth'
+    | '/apps/add'
+    | '/apps/connect'
+    | '/apps/'
+    | '/api/asc/$'
     | '/api/auth/$'
+    | '/api/github/webhooks'
+    | '/apps/$appId/submissions/_header'
+    | '/api/github/install/callback'
+    | '/api/github/install/start'
+    | '/apps/$appId/submissions/_header/'
+    | '/apps/$appId/submissions/_header/$versionId/fix'
+    | '/apps/$appId/submissions/_header/$versionId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DemoBetterAuthRoute: typeof DemoBetterAuthRoute
-  DemoDrizzleRoute: typeof DemoDrizzleRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  AppsRouteRoute: typeof AppsRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ApiAscSplatRoute: typeof ApiAscSplatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiGithubWebhooksRoute: typeof ApiGithubWebhooksRoute
+  ApiGithubInstallCallbackRoute: typeof ApiGithubInstallCallbackRoute
+  ApiGithubInstallStartRoute: typeof ApiGithubInstallStartRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apps': {
+      id: '/apps'
+      path: '/apps'
+      fullPath: '/apps'
+      preLoaderRoute: typeof AppsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,25 +242,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
-      parentRoute: typeof rootRouteImport
+    '/apps/': {
+      id: '/apps/'
+      path: '/'
+      fullPath: '/apps/'
+      preLoaderRoute: typeof AppsIndexRouteImport
+      parentRoute: typeof AppsRouteRoute
     }
-    '/demo/drizzle': {
-      id: '/demo/drizzle'
-      path: '/demo/drizzle'
-      fullPath: '/demo/drizzle'
-      preLoaderRoute: typeof DemoDrizzleRouteImport
-      parentRoute: typeof rootRouteImport
+    '/apps/connect': {
+      id: '/apps/connect'
+      path: '/connect'
+      fullPath: '/apps/connect'
+      preLoaderRoute: typeof AppsConnectRouteImport
+      parentRoute: typeof AppsRouteRoute
     }
-    '/demo/better-auth': {
-      id: '/demo/better-auth'
-      path: '/demo/better-auth'
-      fullPath: '/demo/better-auth'
-      preLoaderRoute: typeof DemoBetterAuthRouteImport
+    '/apps/add': {
+      id: '/apps/add'
+      path: '/add'
+      fullPath: '/apps/add'
+      preLoaderRoute: typeof AppsAddRouteImport
+      parentRoute: typeof AppsRouteRoute
+    }
+    '/api/github/webhooks': {
+      id: '/api/github/webhooks'
+      path: '/api/github/webhooks'
+      fullPath: '/api/github/webhooks'
+      preLoaderRoute: typeof ApiGithubWebhooksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -132,15 +277,106 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/asc/$': {
+      id: '/api/asc/$'
+      path: '/api/asc/$'
+      fullPath: '/api/asc/$'
+      preLoaderRoute: typeof ApiAscSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/github/install/start': {
+      id: '/api/github/install/start'
+      path: '/api/github/install/start'
+      fullPath: '/api/github/install/start'
+      preLoaderRoute: typeof ApiGithubInstallStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/github/install/callback': {
+      id: '/api/github/install/callback'
+      path: '/api/github/install/callback'
+      fullPath: '/api/github/install/callback'
+      preLoaderRoute: typeof ApiGithubInstallCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apps/$appId/submissions/_header': {
+      id: '/apps/$appId/submissions/_header'
+      path: '/$appId/submissions'
+      fullPath: '/apps/$appId/submissions'
+      preLoaderRoute: typeof AppsAppIdSubmissionsHeaderRouteRouteImport
+      parentRoute: typeof AppsRouteRoute
+    }
+    '/apps/$appId/submissions/_header/': {
+      id: '/apps/$appId/submissions/_header/'
+      path: '/'
+      fullPath: '/apps/$appId/submissions/'
+      preLoaderRoute: typeof AppsAppIdSubmissionsHeaderIndexRouteImport
+      parentRoute: typeof AppsAppIdSubmissionsHeaderRouteRoute
+    }
+    '/apps/$appId/submissions/_header/$versionId/': {
+      id: '/apps/$appId/submissions/_header/$versionId/'
+      path: '/$versionId'
+      fullPath: '/apps/$appId/submissions/$versionId/'
+      preLoaderRoute: typeof AppsAppIdSubmissionsHeaderVersionIdIndexRouteImport
+      parentRoute: typeof AppsAppIdSubmissionsHeaderRouteRoute
+    }
+    '/apps/$appId/submissions/_header/$versionId/fix': {
+      id: '/apps/$appId/submissions/_header/$versionId/fix'
+      path: '/$versionId/fix'
+      fullPath: '/apps/$appId/submissions/$versionId/fix'
+      preLoaderRoute: typeof AppsAppIdSubmissionsHeaderVersionIdFixRouteImport
+      parentRoute: typeof AppsAppIdSubmissionsHeaderRouteRoute
+    }
   }
 }
 
+interface AppsAppIdSubmissionsHeaderRouteRouteChildren {
+  AppsAppIdSubmissionsHeaderIndexRoute: typeof AppsAppIdSubmissionsHeaderIndexRoute
+  AppsAppIdSubmissionsHeaderVersionIdFixRoute: typeof AppsAppIdSubmissionsHeaderVersionIdFixRoute
+  AppsAppIdSubmissionsHeaderVersionIdIndexRoute: typeof AppsAppIdSubmissionsHeaderVersionIdIndexRoute
+}
+
+const AppsAppIdSubmissionsHeaderRouteRouteChildren: AppsAppIdSubmissionsHeaderRouteRouteChildren =
+  {
+    AppsAppIdSubmissionsHeaderIndexRoute: AppsAppIdSubmissionsHeaderIndexRoute,
+    AppsAppIdSubmissionsHeaderVersionIdFixRoute:
+      AppsAppIdSubmissionsHeaderVersionIdFixRoute,
+    AppsAppIdSubmissionsHeaderVersionIdIndexRoute:
+      AppsAppIdSubmissionsHeaderVersionIdIndexRoute,
+  }
+
+const AppsAppIdSubmissionsHeaderRouteRouteWithChildren =
+  AppsAppIdSubmissionsHeaderRouteRoute._addFileChildren(
+    AppsAppIdSubmissionsHeaderRouteRouteChildren,
+  )
+
+interface AppsRouteRouteChildren {
+  AppsAddRoute: typeof AppsAddRoute
+  AppsConnectRoute: typeof AppsConnectRoute
+  AppsIndexRoute: typeof AppsIndexRoute
+  AppsAppIdSubmissionsHeaderRouteRoute: typeof AppsAppIdSubmissionsHeaderRouteRouteWithChildren
+}
+
+const AppsRouteRouteChildren: AppsRouteRouteChildren = {
+  AppsAddRoute: AppsAddRoute,
+  AppsConnectRoute: AppsConnectRoute,
+  AppsIndexRoute: AppsIndexRoute,
+  AppsAppIdSubmissionsHeaderRouteRoute:
+    AppsAppIdSubmissionsHeaderRouteRouteWithChildren,
+}
+
+const AppsRouteRouteWithChildren = AppsRouteRoute._addFileChildren(
+  AppsRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DemoBetterAuthRoute: DemoBetterAuthRoute,
-  DemoDrizzleRoute: DemoDrizzleRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  AppsRouteRoute: AppsRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ApiAscSplatRoute: ApiAscSplatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiGithubWebhooksRoute: ApiGithubWebhooksRoute,
+  ApiGithubInstallCallbackRoute: ApiGithubInstallCallbackRoute,
+  ApiGithubInstallStartRoute: ApiGithubInstallStartRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

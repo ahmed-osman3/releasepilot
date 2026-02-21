@@ -1,0 +1,62 @@
+{
+  "type": "object",
+  "title": "PromotedPurchase",
+  "properties": {
+    "type": { "type": "string", "enum": ["promotedPurchases"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "visibleForAllUsers": { "type": "boolean" },
+        "enabled": { "type": "boolean" },
+        "state": {
+          "type": "string",
+          "enum": [
+            "APPROVED",
+            "IN_REVIEW",
+            "PREPARE_FOR_SUBMISSION",
+            "REJECTED"
+          ]
+        }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "inAppPurchaseV2": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["inAppPurchases"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        },
+        "subscription": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["subscriptions"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "PromotedPurchase"
+}

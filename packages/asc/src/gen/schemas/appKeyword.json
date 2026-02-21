@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "title": "AppKeyword",
+  "properties": {
+    "type": { "type": "string", "enum": ["appKeywords"] },
+    "id": { "type": "string" },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "AppKeyword"
+}

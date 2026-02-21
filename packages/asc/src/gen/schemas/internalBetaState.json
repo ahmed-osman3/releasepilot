@@ -1,0 +1,13 @@
+{
+  "type": "string",
+  "enum": [
+    "PROCESSING",
+    "PROCESSING_EXCEPTION",
+    "MISSING_EXPORT_COMPLIANCE",
+    "READY_FOR_BETA_TESTING",
+    "IN_BETA_TESTING",
+    "EXPIRED",
+    "IN_EXPORT_COMPLIANCE_REVIEW"
+  ],
+  "x-readme-ref-name": "InternalBetaState"
+}

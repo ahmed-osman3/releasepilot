@@ -1,0 +1,5 @@
+{
+  "type": "string",
+  "enum": ["V1", "V2"],
+  "x-readme-ref-name": "SubscriptionStatusUrlVersion"
+}

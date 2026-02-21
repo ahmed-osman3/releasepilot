@@ -1,0 +1,2066 @@
+{
+  "type": "object",
+  "title": "ReviewSubmissionItemResponse",
+  "properties": {
+    "data": {
+      "type": "object",
+      "title": "ReviewSubmissionItem",
+      "properties": {
+        "type": { "type": "string", "enum": ["reviewSubmissionItems"] },
+        "id": { "type": "string" },
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "enum": [
+                "READY_FOR_REVIEW",
+                "ACCEPTED",
+                "APPROVED",
+                "REJECTED",
+                "REMOVED"
+              ]
+            }
+          }
+        },
+        "relationships": {
+          "type": "object",
+          "properties": {
+            "appStoreVersion": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "enum": ["appStoreVersions"] },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "appCustomProductPageVersion": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["appCustomProductPageVersions"]
+                    },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "appStoreVersionExperiment": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["appStoreVersionExperiments"]
+                    },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "appStoreVersionExperimentV2": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["appStoreVersionExperiments"]
+                    },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "appEvent": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "enum": ["appEvents"] },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "backgroundAssetVersion": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["backgroundAssetVersions"]
+                    },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "gameCenterAchievementVersion": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["gameCenterAchievementVersions"]
+                    },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "gameCenterActivityVersion": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["gameCenterActivityVersions"]
+                    },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "gameCenterChallengeVersion": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["gameCenterChallengeVersions"]
+                    },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "gameCenterLeaderboardSetVersion": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["gameCenterLeaderboardSetVersions"]
+                    },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            },
+            "gameCenterLeaderboardVersion": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["gameCenterLeaderboardVersions"]
+                    },
+                    "id": { "type": "string" }
+                  },
+                  "required": ["id", "type"]
+                }
+              }
+            }
+          }
+        },
+        "links": {
+          "type": "object",
+          "properties": {
+            "self": { "type": "string", "format": "uri-reference" }
+          },
+          "x-readme-ref-name": "ResourceLinks"
+        }
+      },
+      "required": ["id", "type"],
+      "x-readme-ref-name": "ReviewSubmissionItem"
+    },
+    "included": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "AppCustomProductPageVersion",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["appCustomProductPageVersions"]
+              },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "version": { "type": "string" },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "PREPARE_FOR_SUBMISSION",
+                      "READY_FOR_REVIEW",
+                      "WAITING_FOR_REVIEW",
+                      "IN_REVIEW",
+                      "ACCEPTED",
+                      "APPROVED",
+                      "REPLACED_WITH_NEW_VERSION",
+                      "REJECTED"
+                    ]
+                  },
+                  "deepLink": { "type": "string", "format": "uri" }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "appCustomProductPage": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appCustomProductPages"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appCustomProductPageLocalizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appCustomProductPageLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "AppCustomProductPageVersion"
+          },
+          {
+            "type": "object",
+            "title": "AppEvent",
+            "properties": {
+              "type": { "type": "string", "enum": ["appEvents"] },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "referenceName": { "type": "string" },
+                  "badge": {
+                    "type": "string",
+                    "enum": [
+                      "LIVE_EVENT",
+                      "PREMIERE",
+                      "CHALLENGE",
+                      "COMPETITION",
+                      "NEW_SEASON",
+                      "MAJOR_UPDATE",
+                      "SPECIAL_EVENT"
+                    ]
+                  },
+                  "eventState": {
+                    "type": "string",
+                    "enum": [
+                      "DRAFT",
+                      "READY_FOR_REVIEW",
+                      "WAITING_FOR_REVIEW",
+                      "IN_REVIEW",
+                      "REJECTED",
+                      "ACCEPTED",
+                      "APPROVED",
+                      "PUBLISHED",
+                      "PAST",
+                      "ARCHIVED"
+                    ]
+                  },
+                  "deepLink": { "type": "string", "format": "uri" },
+                  "purchaseRequirement": { "type": "string" },
+                  "primaryLocale": { "type": "string" },
+                  "priority": { "type": "string", "enum": ["HIGH", "NORMAL"] },
+                  "purpose": {
+                    "type": "string",
+                    "enum": [
+                      "APPROPRIATE_FOR_ALL_USERS",
+                      "ATTRACT_NEW_USERS",
+                      "KEEP_ACTIVE_USERS_INFORMED",
+                      "BRING_BACK_LAPSED_USERS"
+                    ]
+                  },
+                  "territorySchedules": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "territories": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        },
+                        "publishStart": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "eventStart": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "eventEnd": { "type": "string", "format": "date-time" }
+                      }
+                    }
+                  },
+                  "archivedTerritorySchedules": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "territories": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        },
+                        "publishStart": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "eventStart": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "eventEnd": { "type": "string", "format": "date-time" }
+                      }
+                    }
+                  }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "localizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appEventLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "AppEvent"
+          },
+          {
+            "type": "object",
+            "title": "AppStoreVersionExperiment",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["appStoreVersionExperiments"]
+              },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "trafficProportion": { "type": "integer" },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "PREPARE_FOR_SUBMISSION",
+                      "READY_FOR_REVIEW",
+                      "WAITING_FOR_REVIEW",
+                      "IN_REVIEW",
+                      "ACCEPTED",
+                      "APPROVED",
+                      "REJECTED",
+                      "COMPLETED",
+                      "STOPPED"
+                    ]
+                  },
+                  "reviewRequired": { "type": "boolean" },
+                  "startDate": { "type": "string", "format": "date-time" },
+                  "endDate": { "type": "string", "format": "date-time" }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "appStoreVersion": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionExperimentTreatments": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appStoreVersionExperimentTreatments"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "deprecated": true,
+            "x-readme-ref-name": "AppStoreVersionExperiment"
+          },
+          {
+            "type": "object",
+            "title": "AppStoreVersion",
+            "properties": {
+              "type": { "type": "string", "enum": ["appStoreVersions"] },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "platform": {
+                    "type": "string",
+                    "enum": ["IOS", "MAC_OS", "TV_OS", "VISION_OS"],
+                    "x-readme-ref-name": "Platform"
+                  },
+                  "versionString": { "type": "string" },
+                  "appStoreState": {
+                    "deprecated": true,
+                    "type": "string",
+                    "enum": [
+                      "ACCEPTED",
+                      "DEVELOPER_REMOVED_FROM_SALE",
+                      "DEVELOPER_REJECTED",
+                      "IN_REVIEW",
+                      "INVALID_BINARY",
+                      "METADATA_REJECTED",
+                      "PENDING_APPLE_RELEASE",
+                      "PENDING_CONTRACT",
+                      "PENDING_DEVELOPER_RELEASE",
+                      "PREPARE_FOR_SUBMISSION",
+                      "PREORDER_READY_FOR_SALE",
+                      "PROCESSING_FOR_APP_STORE",
+                      "READY_FOR_REVIEW",
+                      "READY_FOR_SALE",
+                      "REJECTED",
+                      "REMOVED_FROM_SALE",
+                      "WAITING_FOR_EXPORT_COMPLIANCE",
+                      "WAITING_FOR_REVIEW",
+                      "REPLACED_WITH_NEW_VERSION",
+                      "NOT_APPLICABLE"
+                    ],
+                    "x-readme-ref-name": "AppStoreVersionState"
+                  },
+                  "appVersionState": {
+                    "type": "string",
+                    "enum": [
+                      "ACCEPTED",
+                      "DEVELOPER_REJECTED",
+                      "IN_REVIEW",
+                      "INVALID_BINARY",
+                      "METADATA_REJECTED",
+                      "PENDING_APPLE_RELEASE",
+                      "PENDING_DEVELOPER_RELEASE",
+                      "PREPARE_FOR_SUBMISSION",
+                      "PROCESSING_FOR_DISTRIBUTION",
+                      "READY_FOR_DISTRIBUTION",
+                      "READY_FOR_REVIEW",
+                      "REJECTED",
+                      "REPLACED_WITH_NEW_VERSION",
+                      "WAITING_FOR_EXPORT_COMPLIANCE",
+                      "WAITING_FOR_REVIEW"
+                    ],
+                    "x-readme-ref-name": "AppVersionState"
+                  },
+                  "copyright": { "type": "string" },
+                  "reviewType": {
+                    "type": "string",
+                    "enum": ["APP_STORE", "NOTARIZATION"]
+                  },
+                  "releaseType": {
+                    "type": "string",
+                    "enum": ["MANUAL", "AFTER_APPROVAL", "SCHEDULED"]
+                  },
+                  "earliestReleaseDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "usesIdfa": { "type": "boolean", "deprecated": true },
+                  "downloadable": { "type": "boolean" },
+                  "createdDate": { "type": "string", "format": "date-time" }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "app": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": { "type": "string", "enum": ["apps"] },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "ageRatingDeclaration": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["ageRatingDeclarations"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    },
+                    "deprecated": true
+                  },
+                  "appStoreVersionLocalizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appStoreVersionLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "build": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": { "type": "string", "enum": ["builds"] },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionPhasedRelease": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreVersionPhasedReleases"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "gameCenterAppVersion": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterAppVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "routingAppCoverage": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["routingAppCoverages"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreReviewDetail": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreReviewDetails"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionSubmission": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreVersionSubmissions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appClipDefaultExperience": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appClipDefaultExperiences"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionExperiments": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appStoreVersionExperiments"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "appStoreVersionExperimentsV2": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appStoreVersionExperiments"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "customerReviews": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "alternativeDistributionPackage": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["alternativeDistributionPackages"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "AppStoreVersion"
+          },
+          {
+            "type": "object",
+            "title": "BackgroundAssetVersion",
+            "properties": {
+              "type": { "type": "string", "enum": ["backgroundAssetVersions"] },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "createdDate": { "type": "string", "format": "date-time" },
+                  "platforms": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["IOS", "MAC_OS", "TV_OS", "VISION_OS"],
+                      "x-readme-ref-name": "Platform"
+                    }
+                  },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "AWAITING_UPLOAD",
+                      "PROCESSING",
+                      "FAILED",
+                      "COMPLETE"
+                    ],
+                    "x-readme-ref-name": "BackgroundAssetVersionState"
+                  },
+                  "stateDetails": {
+                    "type": "object",
+                    "properties": {
+                      "errors": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "code": { "type": "string" },
+                            "description": { "type": "string" }
+                          },
+                          "x-readme-ref-name": "StateDetail"
+                        }
+                      },
+                      "warnings": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "code": { "type": "string" },
+                            "description": { "type": "string" }
+                          },
+                          "x-readme-ref-name": "StateDetail"
+                        }
+                      },
+                      "infos": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "code": { "type": "string" },
+                            "description": { "type": "string" }
+                          },
+                          "x-readme-ref-name": "StateDetail"
+                        }
+                      }
+                    }
+                  },
+                  "version": { "type": "string" }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "backgroundAsset": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["backgroundAssets"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "internalBetaRelease": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "backgroundAssetVersionInternalBetaReleases"
+                            ]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "externalBetaRelease": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "backgroundAssetVersionExternalBetaReleases"
+                            ]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreRelease": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["backgroundAssetVersionAppStoreReleases"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "assetFile": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["backgroundAssetUploadFiles"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "manifestFile": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["backgroundAssetUploadFiles"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "backgroundAssetUploadFiles": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "BackgroundAssetVersion"
+          },
+          {
+            "type": "object",
+            "title": "GameCenterAchievementVersionV2",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["gameCenterAchievementVersions"]
+              },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "version": { "type": "integer" },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "PREPARE_FOR_SUBMISSION",
+                      "READY_FOR_REVIEW",
+                      "WAITING_FOR_REVIEW",
+                      "IN_REVIEW",
+                      "DEVELOPER_REJECTED",
+                      "REJECTED",
+                      "ACCEPTED",
+                      "PENDING_RELEASE",
+                      "LIVE",
+                      "REPLACED_WITH_NEW_VERSION"
+                    ],
+                    "x-readme-ref-name": "GameCenterVersionState"
+                  }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "achievement": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterAchievements"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "localizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["gameCenterAchievementLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "GameCenterAchievementVersionV2"
+          },
+          {
+            "type": "object",
+            "title": "GameCenterActivityVersion",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["gameCenterActivityVersions"]
+              },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "version": { "type": "integer" },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "PREPARE_FOR_SUBMISSION",
+                      "READY_FOR_REVIEW",
+                      "WAITING_FOR_REVIEW",
+                      "IN_REVIEW",
+                      "DEVELOPER_REJECTED",
+                      "REJECTED",
+                      "ACCEPTED",
+                      "PENDING_RELEASE",
+                      "LIVE",
+                      "REPLACED_WITH_NEW_VERSION"
+                    ],
+                    "x-readme-ref-name": "GameCenterVersionState"
+                  },
+                  "fallbackUrl": { "type": "string" }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "activity": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterActivities"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "localizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["gameCenterActivityLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "defaultImage": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterActivityImages"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "releases": {
+                    "type": "object",
+                    "properties": {
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["gameCenterActivityVersionReleases"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "GameCenterActivityVersion"
+          },
+          {
+            "type": "object",
+            "title": "GameCenterChallengeVersion",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["gameCenterChallengeVersions"]
+              },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "version": { "type": "integer" },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "PREPARE_FOR_SUBMISSION",
+                      "READY_FOR_REVIEW",
+                      "WAITING_FOR_REVIEW",
+                      "IN_REVIEW",
+                      "DEVELOPER_REJECTED",
+                      "REJECTED",
+                      "ACCEPTED",
+                      "PENDING_RELEASE",
+                      "LIVE",
+                      "REPLACED_WITH_NEW_VERSION"
+                    ],
+                    "x-readme-ref-name": "GameCenterVersionState"
+                  }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "challenge": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterChallenges"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "localizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["gameCenterChallengeLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "releases": {
+                    "type": "object",
+                    "properties": {
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["gameCenterChallengeVersionReleases"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "defaultImage": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterChallengeImages"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "GameCenterChallengeVersion"
+          },
+          {
+            "type": "object",
+            "title": "GameCenterLeaderboardSetVersionV2",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["gameCenterLeaderboardSetVersions"]
+              },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "version": { "type": "integer" },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "PREPARE_FOR_SUBMISSION",
+                      "READY_FOR_REVIEW",
+                      "WAITING_FOR_REVIEW",
+                      "IN_REVIEW",
+                      "DEVELOPER_REJECTED",
+                      "REJECTED",
+                      "ACCEPTED",
+                      "PENDING_RELEASE",
+                      "LIVE",
+                      "REPLACED_WITH_NEW_VERSION"
+                    ],
+                    "x-readme-ref-name": "GameCenterVersionState"
+                  }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "leaderboardSet": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterLeaderboardSets"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "localizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["gameCenterLeaderboardSetLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "GameCenterLeaderboardSetVersionV2"
+          },
+          {
+            "type": "object",
+            "title": "GameCenterLeaderboardVersionV2",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["gameCenterLeaderboardVersions"]
+              },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "version": { "type": "integer" },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "PREPARE_FOR_SUBMISSION",
+                      "READY_FOR_REVIEW",
+                      "WAITING_FOR_REVIEW",
+                      "IN_REVIEW",
+                      "DEVELOPER_REJECTED",
+                      "REJECTED",
+                      "ACCEPTED",
+                      "PENDING_RELEASE",
+                      "LIVE",
+                      "REPLACED_WITH_NEW_VERSION"
+                    ],
+                    "x-readme-ref-name": "GameCenterVersionState"
+                  }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "leaderboard": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterLeaderboards"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "localizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["gameCenterLeaderboardLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "GameCenterLeaderboardVersionV2"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "appEvents": "#kubb-inline-1",
+            "gameCenterAchievementVersions": "#kubb-inline-5",
+            "gameCenterChallengeVersions": "#kubb-inline-7",
+            "appStoreVersions": "#kubb-inline-3",
+            "appStoreVersionExperiments": "#kubb-inline-2",
+            "backgroundAssetVersions": "#kubb-inline-4",
+            "gameCenterActivityVersions": "#kubb-inline-6",
+            "gameCenterLeaderboardSetVersions": "#kubb-inline-8",
+            "appCustomProductPageVersions": "#kubb-inline-0",
+            "gameCenterLeaderboardVersions": "#kubb-inline-9"
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "required": ["self"],
+      "x-readme-ref-name": "DocumentLinks"
+    }
+  },
+  "required": ["data", "links"],
+  "x-readme-ref-name": "ReviewSubmissionItemResponse"
+}

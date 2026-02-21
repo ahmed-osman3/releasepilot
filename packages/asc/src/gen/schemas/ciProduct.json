@@ -1,0 +1,141 @@
+{
+  "type": "object",
+  "title": "CiProduct",
+  "properties": {
+    "type": { "type": "string", "enum": ["ciProducts"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "createdDate": { "type": "string", "format": "date-time" },
+        "productType": { "type": "string", "enum": ["APP", "FRAMEWORK"] }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "app": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["apps"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        },
+        "bundleId": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["bundleIds"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        },
+        "workflows": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            }
+          }
+        },
+        "primaryRepositories": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "meta": {
+              "type": "object",
+              "properties": {
+                "paging": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "limit": { "type": "integer" },
+                    "nextCursor": { "type": "string" }
+                  },
+                  "required": ["limit"]
+                }
+              },
+              "required": ["paging"],
+              "x-readme-ref-name": "PagingInformation"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "enum": ["scmRepositories"] },
+                  "id": { "type": "string" }
+                },
+                "required": ["id", "type"]
+              }
+            }
+          }
+        },
+        "additionalRepositories": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            }
+          }
+        },
+        "buildRuns": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "CiProduct"
+}
