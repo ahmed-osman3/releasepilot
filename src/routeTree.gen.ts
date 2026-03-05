@@ -22,8 +22,8 @@ import { Route as ApiGithubInstallStartRouteImport } from './routes/api/github/i
 import { Route as ApiGithubInstallCallbackRouteImport } from './routes/api/github/install/callback'
 import { Route as AppsAppIdSubmissionsHeaderRouteRouteImport } from './routes/apps/$appId/submissions/_header/route'
 import { Route as AppsAppIdSubmissionsHeaderIndexRouteImport } from './routes/apps/$appId/submissions/_header/index'
-import { Route as AppsAppIdSubmissionsHeaderVersionIdIndexRouteImport } from './routes/apps/$appId/submissions/_header/$versionId/index'
-import { Route as AppsAppIdSubmissionsHeaderVersionIdFixRouteImport } from './routes/apps/$appId/submissions/_header/$versionId/fix'
+import { Route as AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRouteImport } from './routes/apps/$appId/submissions/_header/$reviewSubmissionId/index'
+import { Route as AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRouteImport } from './routes/apps/$appId/submissions/_header/$reviewSubmissionId/fix'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -93,16 +93,16 @@ const AppsAppIdSubmissionsHeaderIndexRoute =
     path: '/',
     getParentRoute: () => AppsAppIdSubmissionsHeaderRouteRoute,
   } as any)
-const AppsAppIdSubmissionsHeaderVersionIdIndexRoute =
-  AppsAppIdSubmissionsHeaderVersionIdIndexRouteImport.update({
-    id: '/$versionId/',
-    path: '/$versionId/',
+const AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRoute =
+  AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRouteImport.update({
+    id: '/$reviewSubmissionId/',
+    path: '/$reviewSubmissionId/',
     getParentRoute: () => AppsAppIdSubmissionsHeaderRouteRoute,
   } as any)
-const AppsAppIdSubmissionsHeaderVersionIdFixRoute =
-  AppsAppIdSubmissionsHeaderVersionIdFixRouteImport.update({
-    id: '/$versionId/fix',
-    path: '/$versionId/fix',
+const AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRoute =
+  AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRouteImport.update({
+    id: '/$reviewSubmissionId/fix',
+    path: '/$reviewSubmissionId/fix',
     getParentRoute: () => AppsAppIdSubmissionsHeaderRouteRoute,
   } as any)
 
@@ -120,8 +120,8 @@ export interface FileRoutesByFullPath {
   '/api/github/install/callback': typeof ApiGithubInstallCallbackRoute
   '/api/github/install/start': typeof ApiGithubInstallStartRoute
   '/apps/$appId/submissions/': typeof AppsAppIdSubmissionsHeaderIndexRoute
-  '/apps/$appId/submissions/$versionId/fix': typeof AppsAppIdSubmissionsHeaderVersionIdFixRoute
-  '/apps/$appId/submissions/$versionId/': typeof AppsAppIdSubmissionsHeaderVersionIdIndexRoute
+  '/apps/$appId/submissions/$reviewSubmissionId/fix': typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRoute
+  '/apps/$appId/submissions/$reviewSubmissionId/': typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -135,8 +135,8 @@ export interface FileRoutesByTo {
   '/api/github/install/callback': typeof ApiGithubInstallCallbackRoute
   '/api/github/install/start': typeof ApiGithubInstallStartRoute
   '/apps/$appId/submissions': typeof AppsAppIdSubmissionsHeaderIndexRoute
-  '/apps/$appId/submissions/$versionId/fix': typeof AppsAppIdSubmissionsHeaderVersionIdFixRoute
-  '/apps/$appId/submissions/$versionId': typeof AppsAppIdSubmissionsHeaderVersionIdIndexRoute
+  '/apps/$appId/submissions/$reviewSubmissionId/fix': typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRoute
+  '/apps/$appId/submissions/$reviewSubmissionId': typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -153,8 +153,8 @@ export interface FileRoutesById {
   '/api/github/install/callback': typeof ApiGithubInstallCallbackRoute
   '/api/github/install/start': typeof ApiGithubInstallStartRoute
   '/apps/$appId/submissions/_header/': typeof AppsAppIdSubmissionsHeaderIndexRoute
-  '/apps/$appId/submissions/_header/$versionId/fix': typeof AppsAppIdSubmissionsHeaderVersionIdFixRoute
-  '/apps/$appId/submissions/_header/$versionId/': typeof AppsAppIdSubmissionsHeaderVersionIdIndexRoute
+  '/apps/$appId/submissions/_header/$reviewSubmissionId/fix': typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRoute
+  '/apps/$appId/submissions/_header/$reviewSubmissionId/': typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -172,8 +172,8 @@ export interface FileRouteTypes {
     | '/api/github/install/callback'
     | '/api/github/install/start'
     | '/apps/$appId/submissions/'
-    | '/apps/$appId/submissions/$versionId/fix'
-    | '/apps/$appId/submissions/$versionId/'
+    | '/apps/$appId/submissions/$reviewSubmissionId/fix'
+    | '/apps/$appId/submissions/$reviewSubmissionId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -187,8 +187,8 @@ export interface FileRouteTypes {
     | '/api/github/install/callback'
     | '/api/github/install/start'
     | '/apps/$appId/submissions'
-    | '/apps/$appId/submissions/$versionId/fix'
-    | '/apps/$appId/submissions/$versionId'
+    | '/apps/$appId/submissions/$reviewSubmissionId/fix'
+    | '/apps/$appId/submissions/$reviewSubmissionId'
   id:
     | '__root__'
     | '/'
@@ -204,8 +204,8 @@ export interface FileRouteTypes {
     | '/api/github/install/callback'
     | '/api/github/install/start'
     | '/apps/$appId/submissions/_header/'
-    | '/apps/$appId/submissions/_header/$versionId/fix'
-    | '/apps/$appId/submissions/_header/$versionId/'
+    | '/apps/$appId/submissions/_header/$reviewSubmissionId/fix'
+    | '/apps/$appId/submissions/_header/$reviewSubmissionId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -312,18 +312,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsAppIdSubmissionsHeaderIndexRouteImport
       parentRoute: typeof AppsAppIdSubmissionsHeaderRouteRoute
     }
-    '/apps/$appId/submissions/_header/$versionId/': {
-      id: '/apps/$appId/submissions/_header/$versionId/'
-      path: '/$versionId'
-      fullPath: '/apps/$appId/submissions/$versionId/'
-      preLoaderRoute: typeof AppsAppIdSubmissionsHeaderVersionIdIndexRouteImport
+    '/apps/$appId/submissions/_header/$reviewSubmissionId/': {
+      id: '/apps/$appId/submissions/_header/$reviewSubmissionId/'
+      path: '/$reviewSubmissionId'
+      fullPath: '/apps/$appId/submissions/$reviewSubmissionId/'
+      preLoaderRoute: typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRouteImport
       parentRoute: typeof AppsAppIdSubmissionsHeaderRouteRoute
     }
-    '/apps/$appId/submissions/_header/$versionId/fix': {
-      id: '/apps/$appId/submissions/_header/$versionId/fix'
-      path: '/$versionId/fix'
-      fullPath: '/apps/$appId/submissions/$versionId/fix'
-      preLoaderRoute: typeof AppsAppIdSubmissionsHeaderVersionIdFixRouteImport
+    '/apps/$appId/submissions/_header/$reviewSubmissionId/fix': {
+      id: '/apps/$appId/submissions/_header/$reviewSubmissionId/fix'
+      path: '/$reviewSubmissionId/fix'
+      fullPath: '/apps/$appId/submissions/$reviewSubmissionId/fix'
+      preLoaderRoute: typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRouteImport
       parentRoute: typeof AppsAppIdSubmissionsHeaderRouteRoute
     }
   }
@@ -331,17 +331,17 @@ declare module '@tanstack/react-router' {
 
 interface AppsAppIdSubmissionsHeaderRouteRouteChildren {
   AppsAppIdSubmissionsHeaderIndexRoute: typeof AppsAppIdSubmissionsHeaderIndexRoute
-  AppsAppIdSubmissionsHeaderVersionIdFixRoute: typeof AppsAppIdSubmissionsHeaderVersionIdFixRoute
-  AppsAppIdSubmissionsHeaderVersionIdIndexRoute: typeof AppsAppIdSubmissionsHeaderVersionIdIndexRoute
+  AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRoute: typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRoute
+  AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRoute: typeof AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRoute
 }
 
 const AppsAppIdSubmissionsHeaderRouteRouteChildren: AppsAppIdSubmissionsHeaderRouteRouteChildren =
   {
     AppsAppIdSubmissionsHeaderIndexRoute: AppsAppIdSubmissionsHeaderIndexRoute,
-    AppsAppIdSubmissionsHeaderVersionIdFixRoute:
-      AppsAppIdSubmissionsHeaderVersionIdFixRoute,
-    AppsAppIdSubmissionsHeaderVersionIdIndexRoute:
-      AppsAppIdSubmissionsHeaderVersionIdIndexRoute,
+    AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRoute:
+      AppsAppIdSubmissionsHeaderReviewSubmissionIdFixRoute,
+    AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRoute:
+      AppsAppIdSubmissionsHeaderReviewSubmissionIdIndexRoute,
   }
 
 const AppsAppIdSubmissionsHeaderRouteRouteWithChildren =

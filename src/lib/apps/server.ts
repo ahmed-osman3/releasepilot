@@ -1,36 +1,60 @@
 import { createServerFn } from '@tanstack/react-start'
 import { and, asc, eq } from 'drizzle-orm'
+import { getBuildByVersionId } from '../app-store-connect/builds'
+import type {
+  GetToken,
+  NormalizedAscError,
+  NormalizedReviewSubmission,
+} from '../app-store-connect/fetch'
+import type { LocaleMetadata } from '@/lib/ai/suggest-rejection-fix'
+import type { VersionLocalizationUpdate } from '@/lib/app-store-connect/localizations'
+import type { ReleaseTimelineEventType } from '@/lib/release-timeline-events'
+import type { AppStoreVersion } from 'packages/asc/src/gen'
+import { runSubmissionRemediationWorker } from '@/lib/ai/submission-remediation-worker'
 import { createAscJwt } from '@/lib/app-store-connect/jwt'
-import { listApps, getAppIconUrl } from '@/lib/app-store-connect/apps'
+import { normalizeAscIssues } from '@/lib/app-store-connect/issues'
+import { getAppIconUrl, listApps } from '@/lib/app-store-connect/apps'
 import {
+  createAndSubmitReviewSubmission,
+  getReviewSubmission,
+  getVersionRejectionReason,
   listAppStoreVersions,
-  getSubmissionState,
-  submitVersionForReview,
+  listReviewSubmissions,
+  submitExistingReviewSubmission,
 } from '@/lib/app-store-connect/submissions'
 import {
   getVersionLocalizations,
   updateVersionLocalization,
-  type VersionLocalizationUpdate,
 } from '@/lib/app-store-connect/localizations'
 import { db } from '@/db/index'
 import { ascApiKeys, connectedApps, releaseTimelineEvents } from '@/db/schema'
-import { encrypt, decrypt } from '@/lib/encrypt'
+import { decrypt, encrypt } from '@/lib/encrypt'
 import {
   RELEASE_TIMELINE_EVENT_CONFIG,
   RELEASE_TIMELINE_EVENT_TYPES,
-  type ReleaseTimelineEventType,
 } from '@/lib/release-timeline-events'
-import {
-  suggestRejectionFix,
-  type LocaleMetadata,
-} from '@/lib/ai/suggest-rejection-fix'
+import { suggestRejectionFix } from '@/lib/ai/suggest-rejection-fix'
 import { requireCurrentUserId } from '@/lib/auth.server'
 import {
-  listReposForUserInstallations,
   listBranchesForRepo,
+  listReposForUserInstallations,
 } from '@/lib/github/server'
-import type { GetToken } from '../app-store-connect/fetch'
-import { getBuildByVersionId } from '../app-store-connect/builds'
+
+type InitialSubmissionCandidate = {
+  versionId: string
+  versionString: string
+  platform: string
+  appVersionState: string
+}
+
+type ReviewSubmissionVersionOption = {
+  id: string
+  versionString: string
+  platform: string
+  appVersionState: string
+  createdDate: string | null
+  eligibleForInitialSubmission: boolean
+}
 
 type LogTimelineEventInput = {
   userId: string
@@ -38,6 +62,7 @@ type LogTimelineEventInput = {
   versionId: string
   eventType: ReleaseTimelineEventType
   detail?: string | null
+  payload?: Record<string, unknown> | null
 }
 
 type ConnectAppInput = {
@@ -63,12 +88,79 @@ function getTokenForApp(
   }
 }
 
+const INITIAL_SUBMISSION_STATES = new Set([
+  'PREPARE_FOR_SUBMISSION',
+  'DEVELOPER_REJECTED',
+  'REJECTED',
+  'METADATA_REJECTED',
+])
+
+function compareVersionsByCreatedDate(a: AppStoreVersion, b: AppStoreVersion) {
+  const aDate = Date.parse(a.attributes?.createdDate ?? '') || 0
+  const bDate = Date.parse(b.attributes?.createdDate ?? '') || 0
+  return bDate - aDate
+}
+
+function mapVersionOption(version: AppStoreVersion): ReviewSubmissionVersionOption {
+  const appVersionState = version.attributes?.appVersionState ?? 'UNKNOWN'
+
+  return {
+    id: version.id,
+    versionString: version.attributes?.versionString ?? version.id,
+    platform: version.attributes?.platform ?? 'IOS',
+    appVersionState,
+    createdDate: version.attributes?.createdDate ?? null,
+    eligibleForInitialSubmission: INITIAL_SUBMISSION_STATES.has(appVersionState),
+  }
+}
+
+function resolveInitialSubmissionCandidate(versions: Array<AppStoreVersion>): {
+  candidate: InitialSubmissionCandidate | null
+  unavailableReason: string | null
+} {
+  const sorted = versions
+    .filter((version) => (version.attributes?.platform ?? 'IOS') === 'IOS')
+    .sort(compareVersionsByCreatedDate)
+  const eligible = sorted.find((version) =>
+    INITIAL_SUBMISSION_STATES.has(version.attributes?.appVersionState ?? ''),
+  )
+
+  if (!eligible) {
+    return {
+      candidate: null,
+      unavailableReason:
+        sorted.length === 0
+          ? 'Create a version in App Store Connect to get started.'
+          : 'No eligible App Store version is ready for an initial submission yet.',
+    }
+  }
+
+  return {
+    candidate: {
+      versionId: eligible.id,
+      versionString: eligible.attributes?.versionString ?? eligible.id,
+      platform: eligible.attributes?.platform ?? 'IOS',
+      appVersionState: eligible.attributes?.appVersionState ?? 'UNKNOWN',
+    },
+    unavailableReason: null,
+  }
+}
+
+function resolveVersionIdForSubmission(
+  versions: Array<AppStoreVersion>,
+  preferredVersionId?: string,
+): string | null {
+  if (preferredVersionId) return preferredVersionId
+  return resolveInitialSubmissionCandidate(versions).candidate?.versionId ?? null
+}
+
 async function logTimelineEvent({
   userId,
   connectedAppId,
   versionId,
   eventType,
   detail,
+  payload,
 }: LogTimelineEventInput): Promise<void> {
   if (!versionId.trim()) return
 
@@ -76,18 +168,26 @@ async function logTimelineEvent({
     .select({ id: connectedApps.id })
     .from(connectedApps)
     .where(
-      and(eq(connectedApps.id, connectedAppId), eq(connectedApps.userId, userId)),
+      and(
+        eq(connectedApps.id, connectedAppId),
+        eq(connectedApps.userId, userId),
+      ),
     )
     .limit(1)
 
   if (!app[0]) return
 
-  await db.insert(releaseTimelineEvents).values({
-    connectedAppId,
-    versionId: versionId.trim(),
-    eventType,
-    detail: detail ?? null,
-  })
+  try {
+    await db.insert(releaseTimelineEvents).values({
+      connectedAppId,
+      versionId: versionId.trim(),
+      eventType,
+      detail: detail ?? null,
+      payload: payload ?? null,
+    })
+  } catch (err) {
+    console.error('[logTimelineEvent] INSERT failed:', err)
+  }
 }
 
 /** Verify ASC key and return list of apps (id, name, bundleId) */
@@ -345,6 +445,7 @@ export const getReleaseTimelineEvents = createServerFn({
         id: releaseTimelineEvents.id,
         eventType: releaseTimelineEvents.eventType,
         detail: releaseTimelineEvents.detail,
+        payload: releaseTimelineEvents.payload,
         createdAt: releaseTimelineEvents.createdAt,
       })
       .from(releaseTimelineEvents)
@@ -362,8 +463,11 @@ export const getReleaseTimelineEvents = createServerFn({
           row.eventType in RELEASE_TIMELINE_EVENT_CONFIG,
       )
       .map((row) => ({
-        ...row,
+        id: row.id,
         eventType: row.eventType,
+        detail: row.detail,
+        payload: row.payload as Record<string, {}> | null,
+        createdAt: row.createdAt,
       }))
   })
 
@@ -412,7 +516,10 @@ async function getConnectedAppById(userId: string, connectedAppId: number) {
     .select()
     .from(connectedApps)
     .where(
-      and(eq(connectedApps.id, connectedAppId), eq(connectedApps.userId, userId)),
+      and(
+        eq(connectedApps.id, connectedAppId),
+        eq(connectedApps.userId, userId),
+      ),
     )
     .limit(1)
 
@@ -442,7 +549,7 @@ async function getConnectedAppById(userId: string, connectedAppId: number) {
   return row
 }
 
-/** Release state: versions with submission state and rejection info */
+/** Release state: review submissions with version context */
 export const getAppReleaseState = createServerFn({
   method: 'GET',
 })
@@ -457,7 +564,7 @@ export const getAppReleaseState = createServerFn({
       !app.keyId ||
       !app.encryptedPrivateKey
     ) {
-      return { versions: [], error: 'App not found' }
+      return { submissions: [], error: 'App not found' }
     }
 
     const getToken = getTokenForApp(
@@ -466,24 +573,17 @@ export const getAppReleaseState = createServerFn({
       app.encryptedPrivateKey,
     )
 
-    const { versions, error } = await listAppStoreVersions(
+    const { submissions, error } = await listReviewSubmissions(
       app.appStoreAppId,
       getToken,
     )
-    if (error) return { versions: [], error }
+    if (error) return { submissions: [], error }
 
-    const withState = await Promise.all(
-      versions.map(async (v) => {
-        const { state } = await getSubmissionState(v.id, getToken)
-        return { ...v, submissionState: state }
-      }),
-    )
-
-    return { versions: withState }
+    return { submissions }
   })
 
-/** Submissions for one app: versions with state, rejection reason, and app name */
-export const getAppSubmissions = createServerFn({
+/** Review submissions for one app with rejection reasons and app metadata */
+export const getAppReviewSubmissions = createServerFn({
   method: 'GET',
 })
   .inputValidator((data: { connectedAppId: number }) => data)
@@ -498,12 +598,15 @@ export const getAppSubmissions = createServerFn({
       !app.encryptedPrivateKey
     ) {
       return {
-        submissions: [],
-        appName: null,
-        iconUrl: null,
-        githubRepoFullName: null,
-        watchedBranch: null,
-        githubInstallationId: null,
+        submissions: [] as Array<NormalizedReviewSubmission>,
+        appName: null as string | null,
+        iconUrl: null as string | null,
+        githubRepoFullName: null as string | null,
+        watchedBranch: null as string | null,
+        githubInstallationId: null as string | null,
+        versionOptions: [] as Array<ReviewSubmissionVersionOption>,
+        initialSubmissionCandidate: null as InitialSubmissionCandidate | null,
+        initialSubmissionUnavailableReason: null as string | null,
         error: 'App not found',
       }
     }
@@ -514,53 +617,70 @@ export const getAppSubmissions = createServerFn({
       app.encryptedPrivateKey,
     )
 
-    const { versions, error } = await listAppStoreVersions(
-      app.appStoreAppId,
-      getToken,
-    )
+    const [subsResult, versionsResult, iconUrl] = await Promise.all([
+      listReviewSubmissions(app.appStoreAppId, getToken),
+      listAppStoreVersions(app.appStoreAppId, getToken),
+      getAppIconUrl(app.appStoreAppId),
+    ])
 
-    const iconUrlPromise = app.appStoreAppId
-      ? getAppIconUrl(app.appStoreAppId)
-      : Promise.resolve(null)
-
-    if (error) {
-      const iconUrl = await iconUrlPromise
+    if (subsResult.error || versionsResult.error) {
       return {
-        submissions: [],
+        submissions: [] as Array<NormalizedReviewSubmission>,
         appName: app.name,
         iconUrl,
         githubRepoFullName: app.githubRepoFullName,
         watchedBranch: app.watchedBranch,
         githubInstallationId: app.githubInstallationId,
-        error,
+        versionOptions: [] as Array<ReviewSubmissionVersionOption>,
+        initialSubmissionCandidate: null as InitialSubmissionCandidate | null,
+        initialSubmissionUnavailableReason: null as string | null,
+        error: subsResult.error ?? versionsResult.error,
       }
     }
 
-    const rejectionReasons: Record<string, string> = {}
-    const rejectedVersions = versions.filter(
-      (v) =>
-        v.attributes?.appVersionState === 'REJECTED' ||
-        v.attributes?.appVersionState === 'METADATA_REJECTED',
-    )
+    const versionOptions = [...versionsResult.versions]
+      .sort(compareVersionsByCreatedDate)
+      .map(mapVersionOption)
 
-    await Promise.all(
-      rejectedVersions.map(async (v) => {
-        const { state } = await getSubmissionState(v.id, getToken)
-        if (state?.rejectionReason) {
-          rejectionReasons[v.id] = state.rejectionReason
+    const submissions = await Promise.all(
+      subsResult.submissions.map(async (sub) => {
+        const versionState = sub.appStoreVersion?.appVersionState ?? ''
+        const needsRejection =
+          sub.state === 'UNRESOLVED_ISSUES' ||
+          versionState === 'REJECTED' ||
+          versionState === 'METADATA_REJECTED'
+
+        if (needsRejection && sub.appStoreVersion) {
+          const reason = await getVersionRejectionReason(
+            sub.appStoreVersion.id,
+            getToken,
+          )
+          return { ...sub, rejectionReason: reason }
         }
+        return sub
       }),
     )
 
-    const iconUrl = await iconUrlPromise
+    let candidate: InitialSubmissionCandidate | null = null
+    let unavailableReason: string | null = null
+
+    if (submissions.length === 0) {
+      const resolvedCandidate =
+        resolveInitialSubmissionCandidate(versionsResult.versions)
+      candidate = resolvedCandidate.candidate
+      unavailableReason = resolvedCandidate.unavailableReason
+    }
+
     return {
-      submissions: versions,
+      submissions,
       appName: app.name,
       iconUrl,
       githubRepoFullName: app.githubRepoFullName,
       watchedBranch: app.watchedBranch,
       githubInstallationId: app.githubInstallationId,
-      rejectionReasons,
+      versionOptions,
+      initialSubmissionCandidate: candidate,
+      initialSubmissionUnavailableReason: unavailableReason,
     }
   })
 
@@ -628,35 +748,37 @@ export const applyVersionMetadata = createServerFn({
         userId,
         connectedAppId: data.connectedAppId,
         versionId: data.versionId,
-        eventType: RELEASE_TIMELINE_EVENT_TYPES.AGENT_METADATA_CHANGES,
+        eventType: RELEASE_TIMELINE_EVENT_TYPES.METADATA_FIX_APPLIED,
         detail: `Updated localization ${data.localeId}`,
+      })
+    } else {
+      await logTimelineEvent({
+        userId,
+        connectedAppId: data.connectedAppId,
+        versionId: data.versionId,
+        eventType: RELEASE_TIMELINE_EVENT_TYPES.ASC_REQUEST_FAILED,
+        detail: `Metadata update failed: ${result.error}`,
       })
     }
 
     return result
   })
 
-/** Submit version for review */
-export const submitVersionForReviewServer = createServerFn({
+/** Submit a review submission (or create one then submit) */
+export const submitReviewSubmissionServer = createServerFn({
   method: 'POST',
 })
-  .inputValidator((data: { connectedAppId: number; versionId: string }) => data)
+  .inputValidator(
+    (data: {
+      connectedAppId: number
+      reviewSubmissionId?: string
+      versionId?: string
+      platform?: string
+      isResubmission?: boolean
+    }) => data,
+  )
   .handler(async ({ data }) => {
     const userId = await requireCurrentUserId()
-
-    await logTimelineEvent({
-      userId,
-      connectedAppId: data.connectedAppId,
-      versionId: data.versionId,
-      eventType: RELEASE_TIMELINE_EVENT_TYPES.INITIAL_SUBMISSION_ATTEMPT,
-    })
-
-    await logTimelineEvent({
-      userId,
-      connectedAppId: data.connectedAppId,
-      versionId: data.versionId,
-      eventType: RELEASE_TIMELINE_EVENT_TYPES.MAKING_SUBMISSION,
-    })
 
     const app = await getConnectedAppById(userId, data.connectedAppId)
 
@@ -674,27 +796,81 @@ export const submitVersionForReviewServer = createServerFn({
       app.keyId,
       app.encryptedPrivateKey,
     )
-    const result = await submitVersionForReview(data.versionId, getToken)
+
+    let resolvedVersionId = data.versionId ?? null
+
+    if (!resolvedVersionId) {
+      const versionsResult = await listAppStoreVersions(app.appStoreAppId, getToken)
+      if (versionsResult.error) {
+        return { success: false, error: versionsResult.error }
+      }
+      resolvedVersionId = resolveVersionIdForSubmission(versionsResult.versions)
+      if (!resolvedVersionId) {
+        return {
+          success: false,
+          error: 'No eligible iOS App Store version is ready to submit.',
+        }
+      }
+    }
+
+    const timelineVersionId = resolvedVersionId ?? ''
+
+    await logTimelineEvent({
+      userId,
+      connectedAppId: data.connectedAppId,
+      versionId: timelineVersionId,
+      eventType: data.isResubmission
+        ? RELEASE_TIMELINE_EVENT_TYPES.RESUBMISSION_REQUESTED
+        : RELEASE_TIMELINE_EVENT_TYPES.SUBMISSION_REQUESTED,
+    })
+
+    let result: {
+      submission: NormalizedReviewSubmission | null
+      error?: string
+      errors?: Array<NormalizedAscError>
+    }
+
+    if (data.reviewSubmissionId) {
+      result = await submitExistingReviewSubmission(
+        data.reviewSubmissionId,
+        getToken,
+        resolvedVersionId ?? undefined,
+      )
+    } else if (resolvedVersionId) {
+      result = await createAndSubmitReviewSubmission(
+        app.appStoreAppId,
+        resolvedVersionId,
+        data.platform ?? 'IOS',
+        getToken,
+      )
+    } else {
+      return { success: false, error: 'No review submission or version specified' }
+    }
 
     if (result.error) {
+      console.error(result.error)
       await logTimelineEvent({
         userId,
         connectedAppId: data.connectedAppId,
-        versionId: data.versionId,
-        eventType: RELEASE_TIMELINE_EVENT_TYPES.SUBMISSION_FAILURE_RECEIVED,
+        versionId: timelineVersionId,
+        eventType: RELEASE_TIMELINE_EVENT_TYPES.ASC_REQUEST_FAILED,
         detail: result.error,
+        payload: result.errors?.length ? { errors: result.errors } : null,
       })
-      return result
+      return { success: false, error: result.error }
     }
 
     await logTimelineEvent({
       userId,
       connectedAppId: data.connectedAppId,
-      versionId: data.versionId,
-      eventType: RELEASE_TIMELINE_EVENT_TYPES.WAITING_FOR_FEEDBACK,
+      versionId: timelineVersionId,
+      eventType: RELEASE_TIMELINE_EVENT_TYPES.SUBMISSION_ACCEPTED,
     })
 
-    return result
+    return {
+      success: true,
+      reviewSubmissionId: result.submission?.id,
+    }
   })
 
 /** AI suggestion for rejection fix (no ASC write) */
@@ -702,11 +878,96 @@ export const suggestRejectionFixServer = createServerFn({
   method: 'POST',
 })
   .inputValidator(
-    (data: { rejectionReason: string; currentMetadata: LocaleMetadata[] }) =>
+    (data: { rejectionReason: string; currentMetadata: Array<LocaleMetadata> }) =>
       data,
   )
   .handler(async ({ data }) => {
     return suggestRejectionFix(data.rejectionReason, data.currentMetadata)
+  })
+
+export const generateSubmissionRemediationPlan = createServerFn({
+  method: 'POST',
+})
+  .inputValidator(
+    (data: {
+      connectedAppId: number
+      reviewSubmissionId: string
+      versionId?: string | null
+      latestErrors: Array<NormalizedAscError>
+    }) => data,
+  )
+  .handler(async ({ data }) => {
+    const userId = await requireCurrentUserId()
+
+    const app = await getConnectedAppById(userId, data.connectedAppId)
+    if (
+      !app?.issuerId ||
+      !app.keyId ||
+      !app.encryptedPrivateKey ||
+      !app.githubInstallationId ||
+      !app.githubRepoFullName ||
+      !app.watchedBranch
+    ) {
+      return {
+        success: false,
+        error: 'App is missing App Store Connect or GitHub configuration.',
+      }
+    }
+
+    const issues = normalizeAscIssues(data.latestErrors)
+    if (issues.length === 0) {
+      return {
+        success: false,
+        error: 'No App Store Connect errors were provided for remediation.',
+      }
+    }
+
+    const getToken = getTokenForApp(
+      app.issuerId,
+      app.keyId,
+      app.encryptedPrivateKey,
+    )
+
+    const metadataResult =
+      data.versionId
+        ? await getVersionLocalizations(data.versionId, getToken)
+        : { localizations: [], error: undefined }
+
+    if (metadataResult.error) {
+      return {
+        success: false,
+        error: metadataResult.error,
+      }
+    }
+
+    const proposal = await runSubmissionRemediationWorker({
+      userId,
+      installationId: app.githubInstallationId,
+      repoFullName: app.githubRepoFullName,
+      branch: app.watchedBranch,
+      issues,
+      errors: data.latestErrors,
+      localizations: metadataResult.localizations,
+    })
+
+    return {
+      success: true,
+      reviewSubmissionId: data.reviewSubmissionId,
+      versionId: data.versionId ?? null,
+      issues,
+      repo: {
+        fullName: app.githubRepoFullName,
+        branch: app.watchedBranch,
+        commitSha: proposal.repoCommitSha,
+      },
+      proposal: {
+        summary: proposal.summary,
+        rationale: proposal.rationale,
+        missingInformation: proposal.missingInformation,
+        proposedChanges: proposal.proposedChanges,
+        availableTools: proposal.availableTools,
+      },
+    }
   })
 
 export const getBuildById = createServerFn({
@@ -727,4 +988,102 @@ export const getBuildById = createServerFn({
       app.encryptedPrivateKey,
     )
     return getBuildByVersionId(data.versionId, getToken)
+  })
+
+/** Refresh review submission state from ASC; detect state changes and log timeline events */
+export const refreshReviewSubmissionState = createServerFn({
+  method: 'POST',
+})
+  .inputValidator(
+    (data: {
+      connectedAppId: number
+      reviewSubmissionId: string
+      versionId: string
+      previousState: string | null
+    }) => data,
+  )
+  .handler(async ({ data }) => {
+    const userId = await requireCurrentUserId()
+
+    const app = await getConnectedAppById(userId, data.connectedAppId)
+    if (
+      !app?.appStoreAppId ||
+      !app.issuerId ||
+      !app.keyId ||
+      !app.encryptedPrivateKey
+    ) {
+      return {
+        submission: null as NormalizedReviewSubmission | null,
+        stateChanged: false,
+        error: 'App not found',
+      }
+    }
+
+    const getToken = getTokenForApp(
+      app.issuerId,
+      app.keyId,
+      app.encryptedPrivateKey,
+    )
+
+    const { submission, error } = await getReviewSubmission(
+      data.reviewSubmissionId,
+      getToken,
+    )
+
+    if (error || !submission) {
+      await logTimelineEvent({
+        userId,
+        connectedAppId: data.connectedAppId,
+        versionId: data.versionId,
+        eventType: RELEASE_TIMELINE_EVENT_TYPES.ASC_REQUEST_FAILED,
+        detail: error ?? 'Review submission not found',
+      })
+      return {
+        submission: null as NormalizedReviewSubmission | null,
+        stateChanged: false,
+        error: error ?? 'Review submission not found',
+      }
+    }
+
+    if (
+      submission.appStoreVersion &&
+      (submission.state === 'UNRESOLVED_ISSUES' ||
+        submission.appStoreVersion.appVersionState === 'REJECTED' ||
+        submission.appStoreVersion.appVersionState === 'METADATA_REJECTED')
+    ) {
+      const reason = await getVersionRejectionReason(
+        submission.appStoreVersion.id,
+        getToken,
+      )
+      submission.rejectionReason = reason
+    }
+
+    const newState = submission.state
+    const stateChanged = newState !== data.previousState
+
+    if (stateChanged) {
+      const isRejection = newState === 'UNRESOLVED_ISSUES'
+      await logTimelineEvent({
+        userId,
+        connectedAppId: data.connectedAppId,
+        versionId: data.versionId,
+        eventType: isRejection
+          ? RELEASE_TIMELINE_EVENT_TYPES.REVIEW_FEEDBACK_RECEIVED
+          : RELEASE_TIMELINE_EVENT_TYPES.STATE_REFRESHED,
+        detail: `State changed: ${data.previousState ?? 'unknown'} → ${newState}`,
+      })
+    } else {
+      await logTimelineEvent({
+        userId,
+        connectedAppId: data.connectedAppId,
+        versionId: data.versionId,
+        eventType: RELEASE_TIMELINE_EVENT_TYPES.STATE_REFRESHED,
+        detail: `No state change detected (${newState})`,
+      })
+    }
+
+    return {
+      submission,
+      stateChanged,
+    }
   })

@@ -2,6 +2,7 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   pgSchema,
   serial,
   text,
@@ -82,6 +83,7 @@ export const releaseTimelineEvents = api.table(
     versionId: text('version_id').notNull(),
     eventType: text('event_type').notNull(),
     detail: text('detail'),
+    payload: jsonb('payload'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (t) => [

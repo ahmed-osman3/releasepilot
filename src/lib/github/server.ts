@@ -123,6 +123,14 @@ async function createInstallationToken(
   return json.token
 }
 
+export async function createInstallationAccessTokenForUser(
+  userId: string,
+  installationId: string,
+): Promise<string> {
+  await ensureUserOwnsInstallation(userId, installationId)
+  return createInstallationToken(installationId)
+}
+
 async function githubInstallationRequest(
   installationId: string,
   path: string,

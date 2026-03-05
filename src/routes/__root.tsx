@@ -13,6 +13,7 @@ import Sidebar from '../components/Sidebar'
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -48,7 +49,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootLayout() {
-  const pathname = useRouterState({ select: (state) => state.location.pathname })
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
   const hideShell = pathname === '/auth'
 
   if (hideShell) {
@@ -64,6 +67,7 @@ function RootLayout() {
       <Sidebar />
       <main className="flex-1 ml-[220px] min-h-screen">
         <Outlet />
+        <TanStackRouterDevtools />
       </main>
     </div>
   )

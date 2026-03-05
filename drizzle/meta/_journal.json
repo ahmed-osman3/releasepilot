@@ -50,6 +50,13 @@
       "when": 1771598451879,
       "tag": "0006_striped_chat",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1772548568073,
+      "tag": "0007_violet_human_cannonball",
+      "breakpoints": true
     }
   ]
 }

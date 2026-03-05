@@ -18,18 +18,91 @@ export interface JsonApiResource {
   >
 }
 
-export interface SubmissionState {
-  versionId: string
-  versionString: string
-  state: string // READY_FOR_SUBMISSION | WAITING_FOR_REVIEW | IN_REVIEW | PENDING_DEVELOPER_RELEASE | etc.
-  rejectionReason?: string
+export type NormalizedAscAssociatedError = {
+  code?: string
+  detail?: string
+}
+
+export type NormalizedAscError = {
+  id?: string
+  status?: string
+  code?: string
+  title?: string
+  detail?: string
+  source?: Record<string, unknown>
+  meta?: Record<string, unknown>
+  associatedErrors?: NormalizedAscAssociatedError[]
+}
+
+export type NormalizedReviewSubmission = {
+  id: string
+  state: string
+  submittedDate: string | null
+  platform: string | null
+  appStoreVersion: {
+    id: string
+    versionString: string
+    appVersionState: string
+  } | null
+  rejectionReason: string | null
+}
+
+type RawAscError = {
+  id?: string
+  status?: string
+  code?: string
+  title?: string
+  detail?: string
+  source?: Record<string, unknown>
+  meta?: Record<string, unknown>
+}
+
+function normalizeAscErrors(
+  raw: RawAscError[],
+): { error: string; errors: NormalizedAscError[] } {
+  const errors: NormalizedAscError[] = raw.map((e) => {
+    let associatedErrors: NormalizedAscAssociatedError[] | undefined
+
+    const assocMap = e.meta?.associatedErrors as
+      | Record<string, Array<{ code?: string; detail?: string }>>
+      | undefined
+
+    if (assocMap && typeof assocMap === 'object') {
+      associatedErrors = Object.values(assocMap).flat().map((ae) => ({
+        code: ae.code,
+        detail: ae.detail,
+      }))
+    }
+
+    return {
+      id: e.id,
+      status: e.status,
+      code: e.code,
+      title: e.title,
+      detail: e.detail,
+      source: e.source,
+      meta: e.meta,
+      ...(associatedErrors?.length ? { associatedErrors } : {}),
+    }
+  })
+
+  const first = raw[0]
+  const error =
+    first?.detail ?? first?.title ?? 'App Store Connect request failed.'
+
+  return { error, errors }
 }
 
 export async function ascFetch<T>(
   path: string,
   getToken: GetToken,
   options: RequestInit = {},
-): Promise<{ data?: T; error?: string }> {
+): Promise<{
+  data?: T
+  included?: JsonApiResource[]
+  error?: string
+  errors?: NormalizedAscError[]
+}> {
   const token = await getToken()
   const url = path.startsWith('http') ? path : `${ASC_BASE}${path}`
   const res = await fetch(url, {
@@ -50,12 +123,12 @@ export async function ascFetch<T>(
     return { error: 'App Store Connect is temporarily unavailable.' }
   }
   const json = (await res.json()) as JsonApiDocument<T> & {
-    errors?: { detail?: string }[]
+    errors?: RawAscError[]
   }
   if (json.errors?.length) {
-    return {
-      error: json.errors[0]?.detail ?? 'App Store Connect request failed.',
-    }
+    console.error(json.errors)
+    const normalized = normalizeAscErrors(json.errors)
+    return { error: normalized.error, errors: normalized.errors }
   }
-  return { data: json.data as T }
+  return { data: json.data as T, included: json.included }
 }
