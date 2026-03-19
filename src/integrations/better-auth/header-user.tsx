@@ -1,14 +1,14 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
-import { useNavigate } from '@tanstack/react-router'
 
 export default function BetterAuthHeader() {
-  const navigate = useNavigate()
+  const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
 
   if (isPending) {
-    return (
-      <div className="h-8 w-full rounded-lg bg-muted/50 animate-pulse" />
-    )
+    return <div className="h-8 w-full rounded-lg bg-muted/50 animate-pulse" />
   }
 
   if (session?.user) {
@@ -32,7 +32,11 @@ export default function BetterAuthHeader() {
             {session.user.name || 'User'}
           </p>
           <button
-            onClick={() => authClient.signOut()}
+            onClick={async () => {
+              await authClient.signOut()
+              router.push('/auth')
+              router.refresh()
+            }}
             className="text-[11px] text-muted-foreground hover:text-primary transition-colors"
           >
             Sign out
@@ -45,7 +49,7 @@ export default function BetterAuthHeader() {
   return (
     <button
       className="w-full h-8 text-[12px] font-medium rounded-lg bg-primary/10 text-primary border border-primary/20 hover:bg-primary/15 transition-colors"
-      onClick={() => navigate({ to: '/auth' })}
+      onClick={() => router.push('/auth')}
     >
       Sign in
     </button>

@@ -10,6 +10,9 @@ count.txt
 .tanstack
 .wrangler
 .output
+.next
+.turbo
+tsconfig.tsbuildinfo
 .vinxi
 __unconfig*
 todos.json

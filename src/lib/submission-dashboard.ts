@@ -1,4 +1,4 @@
-import type { NormalizedAscError } from '@/lib/app-store-connect/fetch'
+import type { NormalizedAscError } from '@/lib/asc/submissions'
 import { RELEASE_TIMELINE_EVENT_CONFIG } from '@/lib/release-timeline-events'
 
 export type TimelineErrorPayload = {

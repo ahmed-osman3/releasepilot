@@ -1,6 +1,9 @@
-import { Link, useRouterState } from '@tanstack/react-router'
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { AppWindow, Key, Sparkles } from 'lucide-react'
-import BetterAuthHeader from '../integrations/better-auth/header-user.tsx'
+import BetterAuthHeader from '@/integrations/better-auth/header-user'
 
 const navItems = [
   { to: '/apps', label: 'Apps', icon: AppWindow },
@@ -8,12 +11,12 @@ const navItems = [
 ] as const
 
 export default function Sidebar() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname }) ?? ''
+  const pathname = usePathname() ?? ''
 
   return (
     <aside className="fixed top-0 left-0 h-screen w-[220px] bg-sidebar-bg border-r border-sidebar-border flex flex-col z-30">
       <div className="px-5 pt-6 pb-5">
-        <Link to="/apps" className="flex items-center gap-2.5 group">
+        <Link href="/apps" className="flex items-center gap-2.5 group">
           <div className="size-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
             <Sparkles className="size-4 text-primary" />
           </div>
@@ -30,13 +33,15 @@ export default function Sidebar() {
         {navItems.map((item) => {
           const isActive =
             item.to === '/apps'
-              ? pathname === '/apps' || (pathname.startsWith('/apps/') && !pathname.startsWith('/apps/connect'))
+              ? pathname === '/apps' ||
+                (pathname.startsWith('/apps/') &&
+                  !pathname.startsWith('/apps/connect'))
               : pathname.startsWith(item.to)
 
           return (
             <Link
               key={item.to}
-              to={item.to}
+              href={item.to}
               className={`nav-glow flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium transition-colors ${
                 isActive
                   ? 'text-primary'
@@ -46,9 +51,7 @@ export default function Sidebar() {
             >
               <item.icon className="size-4" />
               {item.label}
-              {isActive && (
-                <div className="ml-auto size-1.5 rounded-full bg-primary" />
-              )}
+              {isActive && <div className="ml-auto size-1.5 rounded-full bg-primary" />}
             </Link>
           )
         })}

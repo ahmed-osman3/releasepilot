@@ -622,7 +622,7 @@ export function verifyGithubWebhookSignature(
 
 export function getGithubAuthRedirectUrl(
   returnTo: string,
-  userId: string,
+  _userId: string,
 ): string {
   const baseUrl = getAppBaseUrl()
   const installPath = `/api/github/install/start?returnTo=${encodeURIComponent(sanitizeReturnTo(returnTo))}`

@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
-import type { NormalizedAscError } from '@/lib/app-store-connect/fetch'
-import type { NormalizedAscIssue } from '@/lib/app-store-connect/issues'
-import type { VersionLocalization } from '@/lib/app-store-connect/localizations'
+import type { NormalizedAscError } from '@/lib/asc/submissions'
+import type { NormalizedAscIssue } from '@/lib/asc/issues'
+import type { VersionLocalization } from '@/lib/asc/localizations'
 import {
   collectRepositoryContext,
   materializeRepository,

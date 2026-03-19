@@ -1,5 +1,3 @@
-//  @ts-check
+import nextVitals from 'eslint-config-next/core-web-vitals'
 
-import { tanstackConfig } from '@tanstack/eslint-config'
-
-export default [...tanstackConfig]
+export default [...nextVitals]

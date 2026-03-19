@@ -1,7 +1,5 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { tanstackStartCookies } from 'better-auth/tanstack-start'
-import { getRequest } from '@tanstack/start-server-core'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
 
@@ -33,21 +31,18 @@ export const auth = betterAuth({
       redirectURI: `${baseURL}/api/auth/callback/github`,
     },
   },
-
-  plugins: [tanstackStartCookies()],
 })
 
-export async function getCurrentUserId(): Promise<string | null> {
-  const request = getRequest()
+export async function getCurrentUserId(requestHeaders: HeadersInit): Promise<string | null> {
   const session = await auth.api.getSession({
-    headers: request.headers,
+    headers: new Headers(requestHeaders),
   })
 
   return session?.user?.id ?? null
 }
 
-export async function requireCurrentUserId(): Promise<string> {
-  const userId = await getCurrentUserId()
+export async function requireCurrentUserId(requestHeaders: HeadersInit): Promise<string> {
+  const userId = await getCurrentUserId(requestHeaders)
   if (!userId) {
     throw new Error('Unauthorized')
   }
