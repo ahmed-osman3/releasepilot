@@ -1,0 +1,79 @@
+{
+  "type": "object",
+  "title": "BuildBetaDetail",
+  "properties": {
+    "type": { "type": "string", "enum": ["buildBetaDetails"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "autoNotifyEnabled": { "type": "boolean" },
+        "internalBuildState": {
+          "type": "string",
+          "enum": [
+            "PROCESSING",
+            "PROCESSING_EXCEPTION",
+            "MISSING_EXPORT_COMPLIANCE",
+            "READY_FOR_BETA_TESTING",
+            "IN_BETA_TESTING",
+            "EXPIRED",
+            "IN_EXPORT_COMPLIANCE_REVIEW"
+          ],
+          "x-readme-ref-name": "InternalBetaState"
+        },
+        "externalBuildState": {
+          "type": "string",
+          "enum": [
+            "PROCESSING",
+            "PROCESSING_EXCEPTION",
+            "MISSING_EXPORT_COMPLIANCE",
+            "READY_FOR_BETA_TESTING",
+            "IN_BETA_TESTING",
+            "EXPIRED",
+            "READY_FOR_BETA_SUBMISSION",
+            "IN_EXPORT_COMPLIANCE_REVIEW",
+            "WAITING_FOR_BETA_REVIEW",
+            "IN_BETA_REVIEW",
+            "BETA_REJECTED",
+            "BETA_APPROVED",
+            "NOT_APPLICABLE"
+          ],
+          "x-readme-ref-name": "ExternalBetaState"
+        }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "build": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["builds"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "BuildBetaDetail"
+}

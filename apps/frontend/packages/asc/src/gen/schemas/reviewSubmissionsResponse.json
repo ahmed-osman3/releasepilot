@@ -1,0 +1,2442 @@
+{
+  "type": "object",
+  "title": "ReviewSubmissionsResponse",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "ReviewSubmission",
+        "properties": {
+          "type": { "type": "string", "enum": ["reviewSubmissions"] },
+          "id": { "type": "string" },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "platform": {
+                "type": "string",
+                "enum": ["IOS", "MAC_OS", "TV_OS", "VISION_OS"],
+                "x-readme-ref-name": "Platform"
+              },
+              "submittedDate": { "type": "string", "format": "date-time" },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "READY_FOR_REVIEW",
+                  "WAITING_FOR_REVIEW",
+                  "IN_REVIEW",
+                  "UNRESOLVED_ISSUES",
+                  "CANCELING",
+                  "COMPLETING",
+                  "COMPLETE"
+                ]
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "app": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": { "type": "string", "enum": ["apps"] },
+                      "id": { "type": "string" }
+                    },
+                    "required": ["id", "type"]
+                  }
+                }
+              },
+              "items": {
+                "type": "object",
+                "properties": {
+                  "links": {
+                    "type": "object",
+                    "properties": {
+                      "self": { "type": "string", "format": "uri-reference" },
+                      "related": { "type": "string", "format": "uri-reference" }
+                    },
+                    "x-readme-ref-name": "RelationshipLinks"
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "paging": {
+                        "type": "object",
+                        "properties": {
+                          "total": { "type": "integer" },
+                          "limit": { "type": "integer" },
+                          "nextCursor": { "type": "string" }
+                        },
+                        "required": ["limit"]
+                      }
+                    },
+                    "required": ["paging"],
+                    "x-readme-ref-name": "PagingInformation"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": ["reviewSubmissionItems"]
+                        },
+                        "id": { "type": "string" }
+                      },
+                      "required": ["id", "type"]
+                    }
+                  }
+                }
+              },
+              "appStoreVersionForReview": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": ["appStoreVersions"]
+                      },
+                      "id": { "type": "string" }
+                    },
+                    "required": ["id", "type"]
+                  }
+                }
+              },
+              "submittedByActor": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": { "type": "string", "enum": ["actors"] },
+                      "id": { "type": "string" }
+                    },
+                    "required": ["id", "type"]
+                  }
+                }
+              },
+              "lastUpdatedByActor": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": { "type": "string", "enum": ["actors"] },
+                      "id": { "type": "string" }
+                    },
+                    "required": ["id", "type"]
+                  }
+                }
+              }
+            }
+          },
+          "links": {
+            "type": "object",
+            "properties": {
+              "self": { "type": "string", "format": "uri-reference" }
+            },
+            "x-readme-ref-name": "ResourceLinks"
+          }
+        },
+        "required": ["id", "type"],
+        "x-readme-ref-name": "ReviewSubmission"
+      }
+    },
+    "included": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "Actor",
+            "properties": {
+              "type": { "type": "string", "enum": ["actors"] },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "actorType": {
+                    "type": "string",
+                    "enum": ["USER", "API_KEY", "XCODE_CLOUD", "APPLE"]
+                  },
+                  "userFirstName": { "type": "string" },
+                  "userLastName": { "type": "string" },
+                  "userEmail": { "type": "string" },
+                  "apiKeyId": { "type": "string" }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "Actor"
+          },
+          {
+            "type": "object",
+            "title": "AppStoreVersion",
+            "properties": {
+              "type": { "type": "string", "enum": ["appStoreVersions"] },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "platform": {
+                    "type": "string",
+                    "enum": ["IOS", "MAC_OS", "TV_OS", "VISION_OS"],
+                    "x-readme-ref-name": "Platform"
+                  },
+                  "versionString": { "type": "string" },
+                  "appStoreState": {
+                    "deprecated": true,
+                    "type": "string",
+                    "enum": [
+                      "ACCEPTED",
+                      "DEVELOPER_REMOVED_FROM_SALE",
+                      "DEVELOPER_REJECTED",
+                      "IN_REVIEW",
+                      "INVALID_BINARY",
+                      "METADATA_REJECTED",
+                      "PENDING_APPLE_RELEASE",
+                      "PENDING_CONTRACT",
+                      "PENDING_DEVELOPER_RELEASE",
+                      "PREPARE_FOR_SUBMISSION",
+                      "PREORDER_READY_FOR_SALE",
+                      "PROCESSING_FOR_APP_STORE",
+                      "READY_FOR_REVIEW",
+                      "READY_FOR_SALE",
+                      "REJECTED",
+                      "REMOVED_FROM_SALE",
+                      "WAITING_FOR_EXPORT_COMPLIANCE",
+                      "WAITING_FOR_REVIEW",
+                      "REPLACED_WITH_NEW_VERSION",
+                      "NOT_APPLICABLE"
+                    ],
+                    "x-readme-ref-name": "AppStoreVersionState"
+                  },
+                  "appVersionState": {
+                    "type": "string",
+                    "enum": [
+                      "ACCEPTED",
+                      "DEVELOPER_REJECTED",
+                      "IN_REVIEW",
+                      "INVALID_BINARY",
+                      "METADATA_REJECTED",
+                      "PENDING_APPLE_RELEASE",
+                      "PENDING_DEVELOPER_RELEASE",
+                      "PREPARE_FOR_SUBMISSION",
+                      "PROCESSING_FOR_DISTRIBUTION",
+                      "READY_FOR_DISTRIBUTION",
+                      "READY_FOR_REVIEW",
+                      "REJECTED",
+                      "REPLACED_WITH_NEW_VERSION",
+                      "WAITING_FOR_EXPORT_COMPLIANCE",
+                      "WAITING_FOR_REVIEW"
+                    ],
+                    "x-readme-ref-name": "AppVersionState"
+                  },
+                  "copyright": { "type": "string" },
+                  "reviewType": {
+                    "type": "string",
+                    "enum": ["APP_STORE", "NOTARIZATION"]
+                  },
+                  "releaseType": {
+                    "type": "string",
+                    "enum": ["MANUAL", "AFTER_APPROVAL", "SCHEDULED"]
+                  },
+                  "earliestReleaseDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "usesIdfa": { "type": "boolean", "deprecated": true },
+                  "downloadable": { "type": "boolean" },
+                  "createdDate": { "type": "string", "format": "date-time" }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "app": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": { "type": "string", "enum": ["apps"] },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "ageRatingDeclaration": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["ageRatingDeclarations"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    },
+                    "deprecated": true
+                  },
+                  "appStoreVersionLocalizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appStoreVersionLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "build": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": { "type": "string", "enum": ["builds"] },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionPhasedRelease": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreVersionPhasedReleases"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "gameCenterAppVersion": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterAppVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "routingAppCoverage": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["routingAppCoverages"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreReviewDetail": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreReviewDetails"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionSubmission": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreVersionSubmissions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appClipDefaultExperience": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appClipDefaultExperiences"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionExperiments": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appStoreVersionExperiments"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "appStoreVersionExperimentsV2": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appStoreVersionExperiments"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "customerReviews": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "alternativeDistributionPackage": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["alternativeDistributionPackages"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "AppStoreVersion"
+          },
+          {
+            "type": "object",
+            "title": "App",
+            "properties": {
+              "type": { "type": "string", "enum": ["apps"] },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "accessibilityUrl": { "type": "string", "format": "uri" },
+                  "name": { "type": "string" },
+                  "bundleId": { "type": "string" },
+                  "sku": { "type": "string" },
+                  "primaryLocale": { "type": "string" },
+                  "isOrEverWasMadeForKids": { "type": "boolean" },
+                  "subscriptionStatusUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "subscriptionStatusUrlVersion": {
+                    "type": "string",
+                    "enum": ["V1", "V2"],
+                    "x-readme-ref-name": "SubscriptionStatusUrlVersion"
+                  },
+                  "subscriptionStatusUrlForSandbox": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "subscriptionStatusUrlVersionForSandbox": {
+                    "type": "string",
+                    "enum": ["V1", "V2"],
+                    "x-readme-ref-name": "SubscriptionStatusUrlVersion"
+                  },
+                  "contentRightsDeclaration": {
+                    "type": "string",
+                    "enum": [
+                      "DOES_NOT_USE_THIRD_PARTY_CONTENT",
+                      "USES_THIRD_PARTY_CONTENT"
+                    ]
+                  },
+                  "streamlinedPurchasingEnabled": { "type": "boolean" }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "accessibilityDeclarations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "appEncryptionDeclarations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appEncryptionDeclarations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "appStoreIcon": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": { "type": "string", "enum": ["buildIcons"] },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "ciProduct": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": { "type": "string", "enum": ["ciProducts"] },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "betaTesters": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "betaGroups": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["betaGroups"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "appStoreVersions": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appStoreVersions"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "appTags": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "preReleaseVersions": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["preReleaseVersions"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "betaAppLocalizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["betaAppLocalizations"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "builds": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "enum": ["builds"] },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "betaLicenseAgreement": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["betaLicenseAgreements"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "betaAppReviewDetail": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["betaAppReviewDetails"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appInfos": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "enum": ["appInfos"] },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "appClips": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "enum": ["appClips"] },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "appPricePoints": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "endUserLicenseAgreement": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["endUserLicenseAgreements"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appPriceSchedule": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "appAvailabilityV2": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "inAppPurchases": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["inAppPurchases"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    },
+                    "deprecated": true
+                  },
+                  "subscriptionGroups": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["subscriptionGroups"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "gameCenterEnabledVersions": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["gameCenterEnabledVersions"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "perfPowerMetrics": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "appCustomProductPages": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appCustomProductPages"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "inAppPurchasesV2": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["inAppPurchases"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "promotedPurchases": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["promotedPurchases"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "appEvents": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": { "type": "string", "enum": ["appEvents"] },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "reviewSubmissions": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["reviewSubmissions"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "subscriptionGracePeriod": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["subscriptionGracePeriods"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "customerReviews": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "customerReviewSummarizations": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "gameCenterDetail": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterDetails"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionExperimentsV2": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["appStoreVersionExperiments"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  },
+                  "alternativeDistributionKey": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "analyticsReportRequests": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "marketplaceSearchDetail": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "buildUploads": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "backgroundAssets": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "betaFeedbackScreenshotSubmissions": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "betaFeedbackCrashSubmissions": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "searchKeywords": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "webhooks": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      }
+                    }
+                  },
+                  "androidToIosAppMappingDetails": {
+                    "type": "object",
+                    "properties": {
+                      "links": {
+                        "type": "object",
+                        "properties": {
+                          "self": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          },
+                          "related": {
+                            "type": "string",
+                            "format": "uri-reference"
+                          }
+                        },
+                        "x-readme-ref-name": "RelationshipLinks"
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "paging": {
+                            "type": "object",
+                            "properties": {
+                              "total": { "type": "integer" },
+                              "limit": { "type": "integer" },
+                              "nextCursor": { "type": "string" }
+                            },
+                            "required": ["limit"]
+                          }
+                        },
+                        "required": ["paging"],
+                        "x-readme-ref-name": "PagingInformation"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["androidToIosAppMappingDetails"]
+                            },
+                            "id": { "type": "string" }
+                          },
+                          "required": ["id", "type"]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "App"
+          },
+          {
+            "type": "object",
+            "title": "ReviewSubmissionItem",
+            "properties": {
+              "type": { "type": "string", "enum": ["reviewSubmissionItems"] },
+              "id": { "type": "string" },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "READY_FOR_REVIEW",
+                      "ACCEPTED",
+                      "APPROVED",
+                      "REJECTED",
+                      "REMOVED"
+                    ]
+                  }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "appStoreVersion": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appCustomProductPageVersion": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appCustomProductPageVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionExperiment": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreVersionExperiments"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appStoreVersionExperimentV2": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["appStoreVersionExperiments"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "appEvent": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": { "type": "string", "enum": ["appEvents"] },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "backgroundAssetVersion": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["backgroundAssetVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "gameCenterAchievementVersion": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterAchievementVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "gameCenterActivityVersion": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterActivityVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "gameCenterChallengeVersion": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterChallengeVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "gameCenterLeaderboardSetVersion": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterLeaderboardSetVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  },
+                  "gameCenterLeaderboardVersion": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["gameCenterLeaderboardVersions"]
+                          },
+                          "id": { "type": "string" }
+                        },
+                        "required": ["id", "type"]
+                      }
+                    }
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "self": { "type": "string", "format": "uri-reference" }
+                },
+                "x-readme-ref-name": "ResourceLinks"
+              }
+            },
+            "required": ["id", "type"],
+            "x-readme-ref-name": "ReviewSubmissionItem"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "actors": "#kubb-inline-0",
+            "reviewSubmissionItems": "#kubb-inline-3",
+            "appStoreVersions": "#kubb-inline-1",
+            "apps": "#kubb-inline-2"
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": {
+        "self": { "type": "string", "format": "uri-reference" },
+        "first": { "type": "string", "format": "uri-reference" },
+        "next": { "type": "string", "format": "uri-reference" }
+      },
+      "required": ["self"],
+      "x-readme-ref-name": "PagedDocumentLinks"
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "paging": {
+          "type": "object",
+          "properties": {
+            "total": { "type": "integer" },
+            "limit": { "type": "integer" },
+            "nextCursor": { "type": "string" }
+          },
+          "required": ["limit"]
+        }
+      },
+      "required": ["paging"],
+      "x-readme-ref-name": "PagingInformation"
+    }
+  },
+  "required": ["data", "links"],
+  "x-readme-ref-name": "ReviewSubmissionsResponse"
+}

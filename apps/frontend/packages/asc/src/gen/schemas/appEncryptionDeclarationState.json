@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "enum": [
+    "CREATED",
+    "IN_REVIEW",
+    "APPROVED",
+    "REJECTED",
+    "INVALID",
+    "EXPIRED"
+  ],
+  "x-readme-ref-name": "AppEncryptionDeclarationState"
+}

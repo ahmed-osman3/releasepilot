@@ -1,0 +1,5 @@
+{
+  "type": "object",
+  "properties": { "name": { "type": "string" }, "value": { "type": "string" } },
+  "x-readme-ref-name": "HttpHeader"
+}

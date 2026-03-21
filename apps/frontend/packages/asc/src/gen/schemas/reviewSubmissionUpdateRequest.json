@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "title": "ReviewSubmissionUpdateRequest",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["reviewSubmissions"] },
+        "id": { "type": "string" },
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "platform": {
+              "type": "string",
+              "enum": ["IOS", "MAC_OS", "TV_OS", "VISION_OS"],
+              "x-readme-ref-name": "Platform",
+              "nullable": true
+            },
+            "submitted": { "type": "boolean", "nullable": true },
+            "canceled": { "type": "boolean", "nullable": true }
+          }
+        }
+      },
+      "required": ["id", "type"]
+    }
+  },
+  "required": ["data"],
+  "x-readme-ref-name": "ReviewSubmissionUpdateRequest"
+}

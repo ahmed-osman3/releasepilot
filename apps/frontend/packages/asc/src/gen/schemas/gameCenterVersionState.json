@@ -1,0 +1,16 @@
+{
+  "type": "string",
+  "enum": [
+    "PREPARE_FOR_SUBMISSION",
+    "READY_FOR_REVIEW",
+    "WAITING_FOR_REVIEW",
+    "IN_REVIEW",
+    "DEVELOPER_REJECTED",
+    "REJECTED",
+    "ACCEPTED",
+    "PENDING_RELEASE",
+    "LIVE",
+    "REPLACED_WITH_NEW_VERSION"
+  ],
+  "x-readme-ref-name": "GameCenterVersionState"
+}

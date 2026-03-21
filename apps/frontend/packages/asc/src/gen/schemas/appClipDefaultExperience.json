@@ -1,0 +1,131 @@
+{
+  "type": "object",
+  "title": "AppClipDefaultExperience",
+  "properties": {
+    "type": { "type": "string", "enum": ["appClipDefaultExperiences"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["OPEN", "VIEW", "PLAY"],
+          "x-readme-ref-name": "AppClipAction"
+        }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "appClip": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["appClips"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        },
+        "releaseWithAppStoreVersion": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["appStoreVersions"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        },
+        "appClipDefaultExperienceLocalizations": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "meta": {
+              "type": "object",
+              "properties": {
+                "paging": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "limit": { "type": "integer" },
+                    "nextCursor": { "type": "string" }
+                  },
+                  "required": ["limit"]
+                }
+              },
+              "required": ["paging"],
+              "x-readme-ref-name": "PagingInformation"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["appClipDefaultExperienceLocalizations"]
+                  },
+                  "id": { "type": "string" }
+                },
+                "required": ["id", "type"]
+              }
+            }
+          }
+        },
+        "appClipAppStoreReviewDetail": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["appClipAppStoreReviewDetails"]
+                },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "AppClipDefaultExperience"
+}

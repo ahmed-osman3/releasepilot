@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "paging": {
+      "type": "object",
+      "properties": {
+        "total": { "type": "integer" },
+        "limit": { "type": "integer" },
+        "nextCursor": { "type": "string" }
+      },
+      "required": ["limit"]
+    }
+  },
+  "required": ["paging"],
+  "x-readme-ref-name": "PagingInformation"
+}

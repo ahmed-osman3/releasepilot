@@ -1,0 +1,5 @@
+{
+  "type": "string",
+  "enum": ["THREE_DAYS", "SIXTEEN_DAYS", "TWENTY_EIGHT_DAYS"],
+  "x-readme-ref-name": "SubscriptionGracePeriodDuration"
+}

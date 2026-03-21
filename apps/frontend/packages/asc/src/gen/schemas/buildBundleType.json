@@ -1,0 +1,5 @@
+{
+  "type": "string",
+  "enum": ["APP", "APP_CLIP"],
+  "x-readme-ref-name": "BuildBundleType"
+}

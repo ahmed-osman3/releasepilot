@@ -1,0 +1,88 @@
+{
+  "type": "object",
+  "title": "GameCenterAppVersion",
+  "properties": {
+    "type": { "type": "string", "enum": ["gameCenterAppVersions"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": { "enabled": { "type": "boolean" } }
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "compatibilityVersions": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "meta": {
+              "type": "object",
+              "properties": {
+                "paging": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "limit": { "type": "integer" },
+                    "nextCursor": { "type": "string" }
+                  },
+                  "required": ["limit"]
+                }
+              },
+              "required": ["paging"],
+              "x-readme-ref-name": "PagingInformation"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["gameCenterAppVersions"]
+                  },
+                  "id": { "type": "string" }
+                },
+                "required": ["id", "type"]
+              }
+            }
+          }
+        },
+        "appStoreVersion": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["appStoreVersions"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "GameCenterAppVersion"
+}

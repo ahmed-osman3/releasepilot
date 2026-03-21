@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "title": "AppStoreVersionPhasedRelease",
+  "properties": {
+    "type": { "type": "string", "enum": ["appStoreVersionPhasedReleases"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "phasedReleaseState": {
+          "type": "string",
+          "enum": ["INACTIVE", "ACTIVE", "PAUSED", "COMPLETE"],
+          "x-readme-ref-name": "PhasedReleaseState"
+        },
+        "startDate": { "type": "string", "format": "date-time" },
+        "totalPauseDuration": { "type": "integer" },
+        "currentDayNumber": { "type": "integer" }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "AppStoreVersionPhasedRelease"
+}
