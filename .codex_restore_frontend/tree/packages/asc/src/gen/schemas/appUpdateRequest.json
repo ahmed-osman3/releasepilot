@@ -1,0 +1,62 @@
+{
+  "type": "object",
+  "title": "AppUpdateRequest",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["apps"] },
+        "id": { "type": "string" },
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "accessibilityUrl": {
+              "type": "string",
+              "format": "uri",
+              "nullable": true
+            },
+            "bundleId": { "type": "string", "nullable": true },
+            "primaryLocale": { "type": "string", "nullable": true },
+            "subscriptionStatusUrl": {
+              "type": "string",
+              "format": "uri",
+              "nullable": true
+            },
+            "subscriptionStatusUrlVersion": {
+              "type": "string",
+              "enum": ["V1", "V2"],
+              "x-readme-ref-name": "SubscriptionStatusUrlVersion",
+              "nullable": true
+            },
+            "subscriptionStatusUrlForSandbox": {
+              "type": "string",
+              "format": "uri",
+              "nullable": true
+            },
+            "subscriptionStatusUrlVersionForSandbox": {
+              "type": "string",
+              "enum": ["V1", "V2"],
+              "x-readme-ref-name": "SubscriptionStatusUrlVersion",
+              "nullable": true
+            },
+            "contentRightsDeclaration": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "DOES_NOT_USE_THIRD_PARTY_CONTENT",
+                "USES_THIRD_PARTY_CONTENT"
+              ]
+            },
+            "streamlinedPurchasingEnabled": {
+              "type": "boolean",
+              "nullable": true
+            }
+          }
+        }
+      },
+      "required": ["id", "type"]
+    }
+  },
+  "required": ["data"],
+  "x-readme-ref-name": "AppUpdateRequest"
+}

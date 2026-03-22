@@ -1,0 +1,146 @@
+{
+  "type": "object",
+  "title": "AppEncryptionDeclaration",
+  "properties": {
+    "type": { "type": "string", "enum": ["appEncryptionDeclarations"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "appDescription": { "type": "string" },
+        "createdDate": { "type": "string", "format": "date-time" },
+        "usesEncryption": { "type": "boolean", "deprecated": true },
+        "exempt": { "type": "boolean" },
+        "containsProprietaryCryptography": { "type": "boolean" },
+        "containsThirdPartyCryptography": { "type": "boolean" },
+        "availableOnFrenchStore": { "type": "boolean" },
+        "platform": {
+          "type": "string",
+          "enum": ["IOS", "MAC_OS", "TV_OS", "VISION_OS"],
+          "x-readme-ref-name": "Platform",
+          "deprecated": true
+        },
+        "uploadedDate": {
+          "type": "string",
+          "format": "date-time",
+          "deprecated": true
+        },
+        "documentUrl": { "type": "string", "deprecated": true },
+        "documentName": { "type": "string", "deprecated": true },
+        "documentType": { "type": "string", "deprecated": true },
+        "appEncryptionDeclarationState": {
+          "type": "string",
+          "enum": [
+            "CREATED",
+            "IN_REVIEW",
+            "APPROVED",
+            "REJECTED",
+            "INVALID",
+            "EXPIRED"
+          ],
+          "x-readme-ref-name": "AppEncryptionDeclarationState"
+        },
+        "codeValue": { "type": "string" }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "app": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["apps"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          },
+          "deprecated": true
+        },
+        "builds": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "meta": {
+              "type": "object",
+              "properties": {
+                "paging": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "limit": { "type": "integer" },
+                    "nextCursor": { "type": "string" }
+                  },
+                  "required": ["limit"]
+                }
+              },
+              "required": ["paging"],
+              "x-readme-ref-name": "PagingInformation"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "enum": ["builds"] },
+                  "id": { "type": "string" }
+                },
+                "required": ["id", "type"]
+              }
+            }
+          },
+          "deprecated": true
+        },
+        "appEncryptionDeclarationDocument": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["appEncryptionDeclarationDocuments"]
+                },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "AppEncryptionDeclaration"
+}

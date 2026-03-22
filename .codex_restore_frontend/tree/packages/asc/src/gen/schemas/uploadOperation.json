@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "method": { "type": "string" },
+    "url": { "type": "string" },
+    "length": { "type": "integer" },
+    "offset": { "type": "integer" },
+    "requestHeaders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "string" }
+        },
+        "x-readme-ref-name": "HttpHeader"
+      }
+    }
+  },
+  "x-readme-ref-name": "UploadOperation"
+}

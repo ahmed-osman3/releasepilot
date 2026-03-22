@@ -2,7 +2,10 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 
 import * as schema from './schema.ts'
 
-const databaseUrl = process.env.DATABASE_URL_DEV
+const databaseUrl =
+  process.env.NODE_ENV === 'production'
+    ? process.env.DATABASE_URL
+    : process.env.DATABASE_URL_DEV ?? process.env.DATABASE_URL
 
 if (!databaseUrl) {
   throw new Error(

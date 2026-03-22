@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "title": "BetaLicenseAgreement",
+  "properties": {
+    "type": { "type": "string", "enum": ["betaLicenseAgreements"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": { "agreementText": { "type": "string" } }
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "app": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["apps"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "BetaLicenseAgreement"
+}

@@ -1,8 +1,8 @@
 import { createHmac, createPrivateKey, timingSafeEqual } from 'node:crypto'
 import { SignJWT } from 'jose'
 import { and, eq, inArray } from 'drizzle-orm'
-import { db } from '@/db/index'
-import { account, githubInstallations } from '@/db/schema'
+import { db } from '@repo/db'
+import { account, githubInstallations } from '@repo/db/schema'
 
 type GithubInstallationAccount = {
   id?: number
@@ -121,6 +121,14 @@ async function createInstallationToken(
   }
 
   return json.token
+}
+
+export async function createInstallationAccessTokenForUser(
+  userId: string,
+  installationId: string,
+): Promise<string> {
+  await ensureUserOwnsInstallation(userId, installationId)
+  return createInstallationToken(installationId)
 }
 
 async function githubInstallationRequest(
@@ -614,7 +622,7 @@ export function verifyGithubWebhookSignature(
 
 export function getGithubAuthRedirectUrl(
   returnTo: string,
-  userId: string,
+  _userId: string,
 ): string {
   const baseUrl = getAppBaseUrl()
   const installPath = `/api/github/install/start?returnTo=${encodeURIComponent(sanitizeReturnTo(returnTo))}`

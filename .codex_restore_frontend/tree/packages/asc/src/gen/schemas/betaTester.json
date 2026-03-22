@@ -1,0 +1,179 @@
+{
+  "type": "object",
+  "title": "BetaTester",
+  "properties": {
+    "type": { "type": "string", "enum": ["betaTesters"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "inviteType": {
+          "type": "string",
+          "enum": ["EMAIL", "PUBLIC_LINK"],
+          "x-readme-ref-name": "BetaInviteType"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "NOT_INVITED",
+            "INVITED",
+            "ACCEPTED",
+            "INSTALLED",
+            "REVOKED"
+          ],
+          "x-readme-ref-name": "BetaTesterState"
+        },
+        "appDevices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "model": { "type": "string" },
+              "platform": {
+                "type": "string",
+                "enum": ["IOS", "MAC_OS", "TV_OS", "WATCH_OS", "VISION_OS"]
+              },
+              "osVersion": { "type": "string" },
+              "appBuildVersion": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "apps": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "meta": {
+              "type": "object",
+              "properties": {
+                "paging": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "limit": { "type": "integer" },
+                    "nextCursor": { "type": "string" }
+                  },
+                  "required": ["limit"]
+                }
+              },
+              "required": ["paging"],
+              "x-readme-ref-name": "PagingInformation"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "enum": ["apps"] },
+                  "id": { "type": "string" }
+                },
+                "required": ["id", "type"]
+              }
+            }
+          }
+        },
+        "betaGroups": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "meta": {
+              "type": "object",
+              "properties": {
+                "paging": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "limit": { "type": "integer" },
+                    "nextCursor": { "type": "string" }
+                  },
+                  "required": ["limit"]
+                }
+              },
+              "required": ["paging"],
+              "x-readme-ref-name": "PagingInformation"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "enum": ["betaGroups"] },
+                  "id": { "type": "string" }
+                },
+                "required": ["id", "type"]
+              }
+            }
+          }
+        },
+        "builds": {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "object",
+              "properties": {
+                "self": { "type": "string", "format": "uri-reference" },
+                "related": { "type": "string", "format": "uri-reference" }
+              },
+              "x-readme-ref-name": "RelationshipLinks"
+            },
+            "meta": {
+              "type": "object",
+              "properties": {
+                "paging": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "limit": { "type": "integer" },
+                    "nextCursor": { "type": "string" }
+                  },
+                  "required": ["limit"]
+                }
+              },
+              "required": ["paging"],
+              "x-readme-ref-name": "PagingInformation"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "enum": ["builds"] },
+                  "id": { "type": "string" }
+                },
+                "required": ["id", "type"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "BetaTester"
+}

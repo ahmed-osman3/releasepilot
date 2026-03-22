@@ -1,0 +1,102 @@
+{
+  "type": "object",
+  "title": "RoutingAppCoverage",
+  "properties": {
+    "type": { "type": "string", "enum": ["routingAppCoverages"] },
+    "id": { "type": "string" },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "fileSize": { "type": "integer" },
+        "fileName": { "type": "string" },
+        "sourceFileChecksum": { "type": "string" },
+        "uploadOperations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "method": { "type": "string" },
+              "url": { "type": "string" },
+              "length": { "type": "integer" },
+              "offset": { "type": "integer" },
+              "requestHeaders": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "value": { "type": "string" }
+                  },
+                  "x-readme-ref-name": "HttpHeader"
+                }
+              }
+            },
+            "x-readme-ref-name": "UploadOperation"
+          }
+        },
+        "assetDeliveryState": {
+          "type": "object",
+          "properties": {
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "x-readme-ref-name": "AppMediaStateError"
+              }
+            },
+            "warnings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "x-readme-ref-name": "AppMediaStateError"
+              }
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "AWAITING_UPLOAD",
+                "UPLOAD_COMPLETE",
+                "COMPLETE",
+                "FAILED"
+              ]
+            }
+          },
+          "x-readme-ref-name": "AppMediaAssetState"
+        }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "appStoreVersion": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "enum": ["appStoreVersions"] },
+                "id": { "type": "string" }
+              },
+              "required": ["id", "type"]
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": { "self": { "type": "string", "format": "uri-reference" } },
+      "x-readme-ref-name": "ResourceLinks"
+    }
+  },
+  "required": ["id", "type"],
+  "x-readme-ref-name": "RoutingAppCoverage"
+}

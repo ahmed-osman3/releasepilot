@@ -12,8 +12,8 @@ import {
   updateVersionLocalization,
   type VersionLocalizationUpdate,
 } from '@/lib/app-store-connect/localizations'
-import { db } from '@/db/index'
-import { ascApiKeys, connectedApps, releaseTimelineEvents } from '@/db/schema'
+import { db } from '@repo/db'
+import { ascApiKeys, connectedApps, releaseTimelineEvents } from '@repo/db/schema'
 import { encrypt, decrypt } from '@/lib/encrypt'
 import {
   RELEASE_TIMELINE_EVENT_CONFIG,

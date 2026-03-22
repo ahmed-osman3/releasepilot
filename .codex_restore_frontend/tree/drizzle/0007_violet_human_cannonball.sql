@@ -1,0 +1,1 @@
+ALTER TABLE "api"."release_timeline_events" ADD COLUMN "payload" jsonb;

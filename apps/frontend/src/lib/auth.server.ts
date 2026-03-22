@@ -1,9 +1,8 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { tanstackStartCookies } from 'better-auth/tanstack-start'
-import { getRequest } from '@tanstack/start-server-core'
-import { db } from '@/db'
-import * as schema from '@/db/schema'
+import { eq } from 'drizzle-orm'
+import { db } from '@repo/db'
+import * as schema from '@repo/db/schema'
 
 const githubClientId = process.env.GITHUB_CLIENT_ID ?? process.env.GITHUB_APP_CLIENT_ID
 const githubClientSecret =
@@ -33,21 +32,33 @@ export const auth = betterAuth({
       redirectURI: `${baseURL}/api/auth/callback/github`,
     },
   },
-
-  plugins: [tanstackStartCookies()],
 })
 
-export async function getCurrentUserId(): Promise<string | null> {
-  const request = getRequest()
+export async function getCurrentUserId(requestHeaders: HeadersInit): Promise<string | null> {
   const session = await auth.api.getSession({
-    headers: request.headers,
+    headers: new Headers(requestHeaders),
   })
 
-  return session?.user?.id ?? null
+  const userId = session?.user?.id
+  if (!userId) {
+    return null
+  }
+
+  const existingUser = await db
+    .select({ id: schema.user.id })
+    .from(schema.user)
+    .where(eq(schema.user.id, userId))
+    .limit(1)
+
+  if (!existingUser[0]) {
+    return null
+  }
+
+  return userId
 }
 
-export async function requireCurrentUserId(): Promise<string> {
-  const userId = await getCurrentUserId()
+export async function requireCurrentUserId(requestHeaders: HeadersInit): Promise<string> {
+  const userId = await getCurrentUserId(requestHeaders)
   if (!userId) {
     throw new Error('Unauthorized')
   }
