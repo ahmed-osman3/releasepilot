@@ -2,17 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import {
-  AlertTriangle,
-  CheckCircle2,
-  ChevronRight,
-  Circle,
-  Clock,
-  Loader2,
-  Upload,
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AutomationChecklistCard } from '@/features/app-onboarding/AutomationChecklistCard'
 import { AutomationSetupPanel } from '@/features/app-onboarding/AutomationSetupPanel'
 import type {
@@ -22,12 +11,18 @@ import type {
 import { deriveAutomationOnboardingStatus } from '@/features/app-onboarding/automation-status'
 import type { ReleaseTimelineEventType } from '@/lib/release-timeline-events'
 import { RELEASE_TIMELINE_EVENT_CONFIG } from '@/lib/release-timeline-events'
+import { formatRelativeTime, getStatusMessage, humanizeState } from '@/lib/submission-dashboard'
 import {
-  buildActivity,
-  formatRelativeTime,
-  getStatusMessage,
-  humanizeState,
-} from '@/lib/submission-dashboard'
+  ActionRequiredCard,
+
+  OverviewHeroCard,
+  ReleaseTimelineCard,
+  type DashboardTimelineItem,
+  type DashboardViewModel,
+} from './components'
+import { FaGithub } from "react-icons/fa";
+import { BadgeCheck, EllipsisVertical } from 'lucide-react'
+
 
 type TimelineEvent = {
   id: number
@@ -36,43 +31,106 @@ type TimelineEvent = {
   createdAt: string | Date
 }
 
-const STATE_BADGE_CLASSES: Record<string, string> = {
-  WAITING_FOR_REVIEW:
-    'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25',
-  IN_REVIEW:
-    'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/25',
-  COMPLETE:
-    'bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/25',
-  COMPLETING:
-    'bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/25',
-  READY_FOR_REVIEW:
-    'bg-sky-500/15 text-sky-600 dark:text-sky-400 border-sky-500/25',
-  UNRESOLVED_ISSUES:
-    'bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/25',
+function getStatusLabel(reviewState: string | null): string {
+  if (!reviewState) return 'Automation monitoring'
+  return humanizeState(reviewState)
 }
 
-const TIMELINE_ICON_MAP: Record<string, { icon: typeof CheckCircle2; className: string }> = {
-  ok: { icon: CheckCircle2, className: 'text-emerald-500' },
-  warn: { icon: Circle, className: 'text-amber-500' },
-  error: { icon: AlertTriangle, className: 'text-red-500' },
-}
-
-function getNextAction(reviewState: string | null): string {
+function getActionTitle(reviewState: string | null): string {
   switch (reviewState) {
     case 'WAITING_FOR_REVIEW':
-      return 'Waiting for Apple to review build'
+      return 'Waiting for App Store review'
     case 'IN_REVIEW':
-      return 'Apple is reviewing your build'
+      return 'Build currently in review'
     case 'READY_FOR_REVIEW':
-      return 'Submit build for App Store review'
+      return 'Submission is ready for review'
     case 'UNRESOLVED_ISSUES':
-      return 'Resolve detected issues and resubmit'
+      return 'Detected issues need attention'
     case 'COMPLETE':
-      return 'Release is complete'
-    case 'COMPLETING':
-      return 'Release is being finalized'
+      return 'Release completed successfully'
     default:
-      return 'Monitoring release lifecycle'
+      return 'Pull Request #42 created'
+  }
+}
+
+function buildTimelineItems(timelineEvents: TimelineEvent[]): DashboardTimelineItem[] {
+  if (timelineEvents.length === 0) {
+    return [
+      {
+        id: 1,
+        eventType: 'automation_setup',
+        title: 'App setup complete',
+        detail: 'Connected app and automation baseline are ready for release monitoring.',
+        when: 'just now',
+        status: 'ok',
+      },
+      {
+        id: 2,
+        eventType: 'state_refreshed',
+        title: 'Waiting for first live event',
+        detail: 'Timeline entries will stream in as automation and App Store events are processed.',
+        when: 'just now',
+        status: 'warn',
+      },
+    ]
+  }
+
+  return timelineEvents.map((event) => {
+    const config = RELEASE_TIMELINE_EVENT_CONFIG[event.eventType]
+    return {
+      id: event.id,
+      eventType: event.eventType,
+      title: config?.title ?? humanizeState(event.eventType),
+      detail: event.detail ?? config?.defaultDetail ?? 'Update captured for this release step.',
+      when: formatRelativeTime(new Date(event.createdAt)),
+      status: (config?.status ?? 'warn') as DashboardTimelineItem['status'],
+    }
+  })
+}
+
+function buildDashboardModel(input: {
+  connectedAppId: number
+  appName: string | null
+  bundleId: string | null
+  iconUrl: string | null
+  reviewState: string | null
+  rejectionReason: string | null
+  versionString: string | null
+  timelineItems: DashboardTimelineItem[]
+  githubRepoFullName: string | null
+  watchedBranch: string | null
+  githubInstallationId: string | null
+  automationActivatedAt: string | Date | null
+}): DashboardViewModel {
+  const latestTimeline = input.timelineItems[0]
+  const appName = input.appName ?? 'Untitled app'
+
+  return {
+    appName,
+    appIdentifier: input.bundleId ?? `App #${input.connectedAppId}`,
+    appInitial: appName.charAt(0).toUpperCase() || 'A',
+    iconUrl: input.iconUrl,
+    statusLabel: getStatusLabel(input.reviewState),
+    versionLabel: `Version ${input.versionString ?? '1.0.0'}`,
+    branchLabel: `Branch: ${input.watchedBranch ?? 'main'}`,
+    lastUpdatedLabel: latestTimeline?.when ?? 'just now',
+    actionTitle: getActionTitle(input.reviewState),
+    actionDescription:
+      getStatusMessage(input.reviewState ?? 'READY_FOR_REVIEW', input.rejectionReason) ||
+      'A pull request has been created to update metadata and localization files.',
+    githubRepoLabel: input.githubRepoFullName ?? 'GitHub not connected yet',
+    prLabel: 'PR #42',
+    prStatusLabel: input.githubInstallationId ? 'Open' : 'Placeholder',
+    filesChangedLabel: '3 files changed',
+    githubUpdatedLabel: latestTimeline?.when ?? 'just now',
+    buildLabel: `Version ${input.versionString ?? '1.0.0'}`,
+    buildStatusLabel: 'Build 45',
+    buildUpdatedLabel: input.reviewState ? humanizeState(input.reviewState) : 'Processing',
+    timelineItems: input.timelineItems,
+    modeLabel: input.automationActivatedAt ? 'Assisted' : 'Setup pending',
+    lastRunLabel: input.automationActivatedAt
+      ? `${formatRelativeTime(new Date(input.automationActivatedAt))}`
+      : 'Not started',
   }
 }
 
@@ -110,35 +168,6 @@ export default function OverviewClient({
   error?: string | null
 }) {
   const searchParams = useSearchParams()
-  const statusMessage = reviewState
-    ? getStatusMessage(reviewState, rejectionReason)
-    : 'No active submission yet. Your app is connected and ready to manage.'
-
-  const timeline = useMemo(
-    () =>
-      timelineEvents.map((event) => ({
-        ...event,
-        title:
-          RELEASE_TIMELINE_EVENT_CONFIG[event.eventType]?.title ?? event.eventType,
-        status:
-          RELEASE_TIMELINE_EVENT_CONFIG[event.eventType]?.status ?? 'warn',
-        when: formatRelativeTime(new Date(event.createdAt)),
-      })),
-    [timelineEvents],
-  )
-
-  const activity = useMemo(
-    () =>
-      buildActivity({
-        timeline: timelineEvents.map((event) => ({
-          id: String(event.id),
-          eventType: event.eventType,
-          createdAt: new Date(event.createdAt),
-        })),
-      }),
-    [timelineEvents],
-  )
-
   const [githubState, setGithubState] = useState({
     githubInstallationId: githubInstallationId ?? '',
     githubRepoFullName: githubRepoFullName ?? '',
@@ -198,10 +227,6 @@ export default function OverviewClient({
       }
     }
   }, [derivedStatus.nextStepId, searchParams])
-
-  const isAutomationActive = reviewState !== null
-  const isAutomationActivated = Boolean(activatedAt)
-  const shouldShowOnboarding = !isAutomationActivated
 
   async function beginAutomation() {
     setIsStartingAutomation(true)
@@ -265,36 +290,47 @@ export default function OverviewClient({
     }
   }
 
-  return (
-    <div className="space-y-6 p-6 lg:p-8">
-      <div className="flex items-center gap-4">
-        {iconUrl ? (
-          <img
-            src={iconUrl}
-            alt={appName ?? 'App icon'}
-            className="size-14 rounded-2xl object-cover shadow-sm"
-          />
-        ) : (
-          <div className="flex size-14 items-center justify-center rounded-2xl bg-muted text-lg font-bold text-muted-foreground">
-            {appName?.charAt(0).toUpperCase() ?? 'A'}
-          </div>
-        )}
-        <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">
-            {appName ?? 'Untitled app'}
-          </h1>
-          <p className="font-mono text-sm text-muted-foreground">
-            {bundleId ?? `App #${connectedAppId}`}
-          </p>
-        </div>
-      </div>
+  const isAutomationActivated = Boolean(activatedAt)
+  const shouldShowOnboarding = !isAutomationActivated
+  const timelineItems = useMemo(() => buildTimelineItems(timelineEvents), [timelineEvents])
 
-      <div
-        className={`grid gap-6 ${shouldShowOnboarding ? 'xl:grid-cols-[minmax(0,1fr)_420px]' : ''
-          }`}
-      >
-        <div className="space-y-6">
-          {shouldShowOnboarding ? (
+  const model = useMemo(
+    () =>
+      buildDashboardModel({
+        connectedAppId,
+        appName,
+        bundleId,
+        iconUrl,
+        reviewState,
+        rejectionReason,
+        versionString,
+        timelineItems,
+        githubRepoFullName,
+        watchedBranch,
+        githubInstallationId,
+        automationActivatedAt: activatedAt,
+      }),
+    [
+      connectedAppId,
+      appName,
+      bundleId,
+      iconUrl,
+      reviewState,
+      rejectionReason,
+      versionString,
+      timelineItems,
+      githubRepoFullName,
+      watchedBranch,
+      githubInstallationId,
+      activatedAt,
+    ],
+  )
+
+  if (shouldShowOnboarding) {
+    return (
+      <div className="space-y-6 p-6 lg:p-8">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
+          <div className="space-y-6">
             <AutomationChecklistCard
               status={derivedStatus}
               isStartingAutomation={isStartingAutomation}
@@ -309,188 +345,8 @@ export default function OverviewClient({
                 setPanelOpen(true)
               }}
             />
-          ) : null}
+          </div>
 
-          {!shouldShowOnboarding ? (
-            <>
-              <Card className="border-white/8 bg-card/80">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
-                    Automation Status
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex flex-wrap items-center gap-3">
-                    {versionString && (
-                      <span className="text-xl font-bold tabular-nums">v{versionString}</span>
-                    )}
-                    {reviewState && (
-                      <span
-                        className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-[11px] font-semibold tracking-wide uppercase ${STATE_BADGE_CLASSES[reviewState] ?? 'bg-muted text-muted-foreground border-border'}`}
-                      >
-                        {humanizeState(reviewState)}
-                      </span>
-                    )}
-                    <span
-                      className={`text-sm font-medium ${isAutomationActive ? 'text-emerald-500' : 'text-muted-foreground'
-                        }`}
-                    >
-                      Automation: {isAutomationActive ? 'Active' : 'Waiting for setup'}
-                    </span>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <p className="text-sm text-foreground">
-                      <span className="font-medium">Next Action:</span> {getNextAction(reviewState)}
-                    </p>
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <Clock className="size-3" />
-                      <span>
-                        Last Check:{' '}
-                        {timeline.length > 0 ? timeline[timeline.length - 1]!.when : 'never'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="text-[13px] leading-relaxed text-muted-foreground">
-                    {statusMessage}
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-white/8 bg-card/80">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
-                    Automation Timeline
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {timeline.length === 0 ? (
-                    <p className="py-4 text-center text-sm text-muted-foreground">
-                      No timeline events yet. Automation activity will appear here after setup begins.
-                    </p>
-                  ) : (
-                    <div className="space-y-1">
-                      {timeline.map((item) => {
-                        const iconConfig = TIMELINE_ICON_MAP[item.status] ?? TIMELINE_ICON_MAP.warn!
-                        const Icon = iconConfig.icon
-
-                        return (
-                          <div
-                            key={item.id}
-                            className="flex items-center justify-between gap-3 rounded-lg px-1 py-2"
-                          >
-                            <div className="flex min-w-0 items-center gap-3">
-                              <Icon className={`size-4 shrink-0 ${iconConfig.className}`} />
-                              <span
-                                className={`truncate text-sm ${item.status === 'warn'
-                                    ? 'font-medium text-amber-500'
-                                    : 'text-foreground'
-                                  }`}
-                              >
-                                {item.title}
-                              </span>
-                            </div>
-                            <span className="whitespace-nowrap text-xs tabular-nums text-muted-foreground">
-                              {item.when}
-                            </span>
-                          </div>
-                        )
-                      })}
-
-                      {reviewState &&
-                        (reviewState === 'WAITING_FOR_REVIEW' || reviewState === 'IN_REVIEW') ? (
-                        <div className="flex items-center gap-2 pt-2 pl-1 text-xs text-muted-foreground">
-                          <Loader2 className="size-3 animate-spin" />
-                          <span>Monitoring release lifecycle while waiting for Apple&apos;s decision.</span>
-                        </div>
-                      ) : null}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              <div className="grid gap-6 lg:grid-cols-2">
-                <Card className="border-white/8 bg-card/80">
-                  <CardHeader className="flex flex-row items-center justify-between pb-3">
-                    <CardTitle className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
-                      Detected Issues
-                    </CardTitle>
-                    <Link
-                      href={`/apps/${connectedAppId}/detected-issues`}
-                      className="flex items-center gap-1 text-xs text-primary hover:underline"
-                    >
-                      View all
-                      <ChevronRight className="size-3" />
-                    </Link>
-                  </CardHeader>
-                  <CardContent>
-                    {rejectionReason ? (
-                      <div className="space-y-3">
-                        <div className="flex items-start gap-2">
-                          <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-500" />
-                          <span className="text-sm font-medium text-foreground">
-                            {rejectionReason.length > 80
-                              ? `${rejectionReason.slice(0, 77)}...`
-                              : rejectionReason}
-                          </span>
-                        </div>
-                        <div className="space-y-1.5 pl-6">
-                          <Link
-                            href={`/apps/${connectedAppId}/detected-issues`}
-                            className="text-xs text-primary hover:underline"
-                          >
-                            Fix generated
-                          </Link>
-                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <Upload className="size-3" />
-                            <span>Build {versionString ? `v${versionString}` : 'pending'}</span>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="py-2 text-sm text-muted-foreground">No issues detected.</p>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card className="border-white/8 bg-card/80">
-                  <CardHeader className="flex flex-row items-center justify-between pb-3">
-                    <CardTitle className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">
-                      Automation Activity
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {activity.length > 0 ? (
-                      <div className="space-y-2">
-                        {activity.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex items-center justify-between gap-3 text-sm"
-                          >
-                            <div className="flex min-w-0 items-center gap-2.5">
-                              <CheckCircle2 className="size-3.5 shrink-0 text-emerald-500" />
-                              <span className="truncate">{item.text}</span>
-                            </div>
-                            <span className="whitespace-nowrap text-xs tabular-nums text-muted-foreground">
-                              {item.when}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">
-                        No automation activity yet. Finish setup to start repository-aware workflows.
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-            </>
-          ) : null}
-        </div>
-
-        {shouldShowOnboarding ? (
           <AutomationSetupPanel
             key={connectedAppId}
             open={panelOpen}
@@ -517,14 +373,66 @@ export default function OverviewClient({
               setPanelOpen(true)
             }}
           />
+        </div>
+
+        {error ? (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
+            <p className="text-xs text-destructive">Data warning: {error}</p>
+          </div>
         ) : null}
       </div>
+    )
+  }
 
-      {error ? (
-        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
-          <p className="text-xs text-destructive">Data warning: {error}</p>
-        </div>
-      ) : null}
+  return (
+    <div className="relative isolate h-[calc(100vh-3rem)] overflow-hidden px-5 py-4 lg:px-6 lg:py-5">
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(90%_120%_at_50%_0%,rgba(88,102,255,0.2),transparent_60%),radial-gradient(65%_100%_at_100%_20%,rgba(52,77,166,0.18),transparent_72%)]"
+        aria-hidden="true"
+      />
+
+      <div className="flex h-full min-h-0 flex-col gap-4">
+        <OverviewHeroCard model={model} />
+
+        <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="flex min-h-0 flex-col gap-4">
+            <ActionRequiredCard model={model} />
+            <ReleaseTimelineCard items={model.timelineItems} />
+          </div>
+
+          <aside className="flex min-h-0 flex-col gap-4">
+            <div className=' flex-1 rounded-2xl shadow-sm border border-white/10 p-4'>
+              {/* Github Status Card */}
+              <div className='flex flex-row items-center justify-between p-2'>
+                <h2 className="text-md font-semibold leading-tight text-foreground">Github</h2>
+                <FaGithub className="size-5 text-foreground" />
+              </div>
+              {/* Github card */}
+              <div className='flex flex-col gap-2'>
+                <div className='bg-[linear-gradient(180deg,)] rounded-xl p-4 border border-white/10'>
+                  <div className='flex justify-between items-center'>
+                    <div className='flex items-center gap-1'>
+                      <p className="text-lg font-semibold leading-tight text-foreground">PR 42</p>
+                      <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-500/15 px-1 py-1 text-xs font-medium uppercase tracking-[0.04em] text-amber-200">
+                        <BadgeCheck className="size-1" />
+                        {model.statusLabel}
+                      </span>
+                    </div>
+                    <EllipsisVertical className="size-4 text-foreground" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </aside>
+        </div>§
+
+        {error ? (
+          <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3">
+            <p className="text-sm text-destructive">Data warning: {error}</p>
+          </div>
+        ) : null}
+      </div>
     </div>
   )
 }

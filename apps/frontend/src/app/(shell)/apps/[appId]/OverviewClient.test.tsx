@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { deriveAutomationOnboardingStatus } from '@/features/app-onboarding/automation-status'
 import OverviewClient from './OverviewClient'
@@ -14,7 +14,7 @@ const baseProps = {
   iconUrl: null,
   reviewState: null,
   rejectionReason: null,
-  versionString: '1.0',
+  versionString: '1.2.0',
   timelineEvents: [],
   githubRepoFullName: null,
   watchedBranch: null,
@@ -36,16 +36,37 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-describe('OverviewClient automation onboarding', () => {
-  it('auto-opens the automation panel when onboarding is incomplete', () => {
-    render(<OverviewClient {...baseProps} />)
+describe('OverviewClient onboarding + post-onboarding dashboard', () => {
+  it('keeps onboarding UI for apps that have not activated automation', () => {
+    render(<OverviewClient {...baseProps} automationActivatedAt={null} />)
 
     expect(screen.getByText('Set up your first automated release')).toBeTruthy()
     expect(screen.getByText('Automation Setup')).toBeTruthy()
     expect(screen.getAllByText('Choose GitHub repository').length).toBeGreaterThan(0)
   })
 
-  it('hides the onboarding flow once automation has started', () => {
+  it('renders dashboard cards once automation is activated', () => {
+    render(
+      <OverviewClient
+        {...baseProps}
+        githubRepoFullName="acme/releasepilot"
+        watchedBranch="main"
+        githubInstallationId="inst_1"
+        automationLocales={['en-US']}
+        automationActivatedAt="2026-03-19T10:00:00.000Z"
+      />,
+    )
+
+    expect(screen.getByRole('heading', { name: 'Deenya' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Action Required' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Release Timeline' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'GitHub' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Build' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Controls' })).toBeTruthy()
+    expect(screen.getByText('acme/releasepilot')).toBeTruthy()
+  })
+
+  it('shows fallback placeholder text for missing PR and build data on dashboard', () => {
     render(
       <OverviewClient
         {...baseProps}
@@ -64,12 +85,11 @@ describe('OverviewClient automation onboarding', () => {
       />,
     )
 
-    expect(screen.queryByText('Set up your first automated release')).toBeNull()
-    expect(screen.queryByText('Automation Setup')).toBeNull()
-    expect(screen.getByText('Automation Timeline')).toBeTruthy()
+    expect(screen.getAllByText('PR #42').length).toBeGreaterThan(0)
+    expect(screen.getByText('Build 45')).toBeTruthy()
   })
 
-  it('shows begin automating CTA when setup is complete but automation has not started', () => {
+  it('renders visual-only action buttons with disabled-intent attributes', () => {
     render(
       <OverviewClient
         {...baseProps}
@@ -84,13 +104,17 @@ describe('OverviewClient automation onboarding', () => {
         githubRepoFullName="acme/releasepilot"
         watchedBranch="main"
         automationLocales={['en-US']}
-        automationActivatedAt={null}
+        automationActivatedAt="2026-03-19T10:00:00.000Z"
       />,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: /automation setup complete/i }))
-
-    expect(screen.getAllByRole('button', { name: /begin automating/i }).length).toBeGreaterThan(0)
-    expect(screen.queryByText('Automation Timeline')).toBeNull()
+    expect(screen.getByRole('button', { name: 'Review PR' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Approve & Continue' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'View pull request' }).getAttribute('aria-disabled')).toBe(
+      'true',
+    )
+    expect(screen.getByRole('button', { name: 'View in TestFlight' }).getAttribute('aria-disabled')).toBe(
+      'true',
+    )
   })
 })
