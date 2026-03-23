@@ -1,5 +1,0 @@
-{
-  "type": "string",
-  "enum": ["EMAIL", "PUBLIC_LINK"],
-  "x-readme-ref-name": "BetaInviteType"
-}

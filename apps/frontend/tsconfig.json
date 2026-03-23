@@ -46,12 +46,6 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "@repo/db": [
-        "../../packages/db/src/index.ts"
-      ],
-      "@repo/db/schema": [
-        "../../packages/db/src/schema.ts"
       ]
     },
     "allowJs": true,

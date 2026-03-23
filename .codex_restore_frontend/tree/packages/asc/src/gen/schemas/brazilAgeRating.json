@@ -1,5 +1,0 @@
-{
-  "type": "string",
-  "enum": ["L", "TEN", "TWELVE", "FOURTEEN", "SIXTEEN", "EIGHTEEN"],
-  "x-readme-ref-name": "BrazilAgeRating"
-}

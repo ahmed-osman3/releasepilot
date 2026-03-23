@@ -1,5 +1,0 @@
-{
-  "type": "string",
-  "enum": ["MD5", "SHA_256"],
-  "x-readme-ref-name": "ChecksumAlgorithm"
-}

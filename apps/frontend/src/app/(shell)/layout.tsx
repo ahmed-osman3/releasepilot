@@ -22,7 +22,9 @@ export default async function ShellLayout({ children }: { children: React.ReactN
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="min-h-screen">
-        <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex-1 overflow-y-auto">
+          <ShellHeader />
+          {children}</div>
       </SidebarInset>
     </SidebarProvider>
   )

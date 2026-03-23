@@ -1,7 +1,0 @@
-{
-  "type": "object",
-  "title": "JsonPointer",
-  "properties": { "pointer": { "type": "string" } },
-  "required": ["pointer"],
-  "x-readme-ref-name": "ErrorSourcePointer"
-}

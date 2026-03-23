@@ -1,8 +1,0 @@
-{
-  "type": "object",
-  "properties": {
-    "self": { "type": "string", "format": "uri-reference" },
-    "related": { "type": "string", "format": "uri-reference" }
-  },
-  "x-readme-ref-name": "RelationshipLinks"
-}

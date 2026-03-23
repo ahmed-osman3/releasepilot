@@ -1,5 +1,0 @@
-{
-  "type": "string",
-  "enum": ["AWAITING_UPLOAD", "PROCESSING", "FAILED", "COMPLETE"],
-  "x-readme-ref-name": "BuildUploadState"
-}

@@ -29,13 +29,13 @@ export function ActionRequiredCard({ model }: ActionRequiredCardProps) {
         <div className="flex items-center justify-between gap-4">
           <Button
             variant="ghost"
-            className="h-14 w-[190px] rounded-2xl border border-white/14 bg-[linear-gradient(180deg,rgba(48,50,68,0.72),rgba(34,36,52,0.72))] px-9 text-[0.95rem] font-medium text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:bg-[linear-gradient(180deg,rgba(54,56,76,0.84),rgba(38,40,58,0.84))]"
+            className="h-14 w-[190px] rounded-2xl border  px-9 text-[0.95rem] font-medium text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:bg-[linear-gradient(180deg,rgba(54,56,76,0.84),rgba(38,40,58,0.84))]"
           >
             Review PR
           </Button>
           <Button
             variant="default"
-            className="h-14 min-w-[190px] rounded-2xl border border-indigo-300/30 bg-[linear-gradient(180deg,rgba(104,112,255,0.98),rgba(87,101,245,0.94))] px-10 text-[0.95rem] font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_16px_32px_rgba(74,86,220,0.28)] hover:bg-[linear-gradient(180deg,rgba(110,118,255,1),rgba(92,106,248,0.97))]"
+            className="h-14 min-w-[190px] rounded-2xl border border-indigo-300/30  px-10 text-[0.95rem] font-medium hover:cursor-pointer"
           >
             Approve & Continue
           </Button>

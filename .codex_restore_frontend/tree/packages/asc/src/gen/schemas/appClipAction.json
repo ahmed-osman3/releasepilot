@@ -1,5 +1,0 @@
-{
-  "type": "string",
-  "enum": ["OPEN", "VIEW", "PLAY"],
-  "x-readme-ref-name": "AppClipAction"
-}

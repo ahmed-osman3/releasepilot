@@ -2,6 +2,15 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { FaAppStore, FaGithub } from 'react-icons/fa'
+import {
+  BadgeCheck,
+  EllipsisVertical,
+  Pause,
+  RotateCcw,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { AutomationChecklistCard } from '@/features/app-onboarding/AutomationChecklistCard'
 import { AutomationSetupPanel } from '@/features/app-onboarding/AutomationSetupPanel'
 import type {
@@ -14,15 +23,11 @@ import { RELEASE_TIMELINE_EVENT_CONFIG } from '@/lib/release-timeline-events'
 import { formatRelativeTime, getStatusMessage, humanizeState } from '@/lib/submission-dashboard'
 import {
   ActionRequiredCard,
-
   OverviewHeroCard,
-  ReleaseTimelineCard,
   type DashboardTimelineItem,
   type DashboardViewModel,
 } from './components'
-import { FaGithub } from "react-icons/fa";
-import { BadgeCheck, EllipsisVertical } from 'lucide-react'
-
+import { Card } from './components/Card'
 
 type TimelineEvent = {
   id: number
@@ -129,7 +134,7 @@ function buildDashboardModel(input: {
     timelineItems: input.timelineItems,
     modeLabel: input.automationActivatedAt ? 'Assisted' : 'Setup pending',
     lastRunLabel: input.automationActivatedAt
-      ? `${formatRelativeTime(new Date(input.automationActivatedAt))}`
+      ? formatRelativeTime(new Date(input.automationActivatedAt))
       : 'Not started',
   }
 }
@@ -397,35 +402,103 @@ export default function OverviewClient({
         <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div className="flex min-h-0 flex-col gap-4">
             <ActionRequiredCard model={model} />
-            <ReleaseTimelineCard items={model.timelineItems} />
           </div>
 
           <aside className="flex min-h-0 flex-col gap-4">
-            <div className=' flex-1 rounded-2xl shadow-sm border border-white/10 p-4'>
-              {/* Github Status Card */}
-              <div className='flex flex-row items-center justify-between p-2'>
-                <h2 className="text-md font-semibold leading-tight text-foreground">Github</h2>
-                <FaGithub className="size-5 text-foreground" />
-              </div>
-              {/* Github card */}
-              <div className='flex flex-col gap-2'>
-                <div className='bg-[linear-gradient(180deg,)] rounded-xl p-4 border border-white/10'>
-                  <div className='flex justify-between items-center'>
-                    <div className='flex items-center gap-1'>
-                      <p className="text-lg font-semibold leading-tight text-foreground">PR 42</p>
-                      <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-500/15 px-1 py-1 text-xs font-medium uppercase tracking-[0.04em] text-amber-200">
-                        <BadgeCheck className="size-1" />
-                        {model.statusLabel}
-                      </span>
+            <div className="flex-1 rounded-2xl border border-white/10 p-4 shadow-sm">
+              <div className="flex h-full flex-col gap-3">
+                <Card>
+                  <div className="flex flex-row items-center justify-between p-2">
+                    <h2 className="text-md font-semibold leading-tight text-foreground">Github</h2>
+                    <FaGithub className="size-5 text-foreground" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="rounded-xl border border-white/10 p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold leading-tight text-foreground">
+                            {model.prLabel}
+                          </p>
+                          <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-500/15 px-1 py-1 text-xs font-medium uppercase tracking-[0.04em] text-amber-200">
+                            <BadgeCheck className="size-1" />
+                            {model.prStatusLabel}
+                          </span>
+                        </div>
+                        <EllipsisVertical className="size-4 text-foreground" />
+                      </div>
+                      <div className="flex flex-col gap-2 py-2">
+                        <span className="text-sm font-medium">{model.filesChangedLabel}</span>
+                        <span className="text-sm font-medium">
+                          Updated: {model.githubUpdatedLabel}
+                        </span>
+                        <Button>View Pull Request</Button>
+                      </div>
                     </div>
-                    <EllipsisVertical className="size-4 text-foreground" />
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="flex flex-row items-center justify-between p-2">
+                    <h2 className="text-md font-semibold leading-tight text-foreground">Build</h2>
+                    <FaAppStore className="size-5 text-foreground" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="rounded-xl border border-white/10 p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold leading-tight text-foreground">
+                            {model.buildStatusLabel}
+                          </p>
+                          <span className="inline-flex items-center gap-1 rounded-full border bg-[#132430] px-1 py-1 text-xs font-medium uppercase tracking-[0.04em] text-[#61b3c9]">
+                            <BadgeCheck className="size-1" />
+                            {model.versionLabel}
+                          </span>
+                        </div>
+                        <EllipsisVertical className="size-4 text-foreground" />
+                      </div>
+                      <div className="flex flex-col gap-2 py-2">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Spinner className="size-4" />
+                          <span>{model.buildUpdatedLabel}</span>
+                        </div>
+                        <Button variant="secondary" className="border">
+                          View in TestFlight
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                <div className="border-t border-white/10 pt-3">
+                  <div className="px-2 pb-2">
+                    <h3 className="text-md font-semibold leading-tight text-foreground">
+                      Controls
+                    </h3>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      variant="secondary"
+                      className="h-11 justify-start rounded-xl border border-white/10 px-4"
+                    >
+                      <RotateCcw className="size-4" />
+                      Run again
+                      <span className="mx-2 h-4 w-px bg-white/10" />
+                      <Pause className="size-4" />
+                      Pause automation
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      className="h-11 justify-start rounded-xl border border-white/10 px-4"
+                    >
+                      <RotateCcw className="size-4" />
+                      Retry failed step
+                    </Button>
                   </div>
                 </div>
               </div>
             </div>
-
           </aside>
-        </div>§
+        </div>
 
         {error ? (
           <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3">

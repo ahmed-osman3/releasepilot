@@ -1,7 +1,0 @@
-{
-  "type": "object",
-  "title": "Parameter",
-  "properties": { "parameter": { "type": "string" } },
-  "required": ["parameter"],
-  "x-readme-ref-name": "ErrorSourceParameter"
-}

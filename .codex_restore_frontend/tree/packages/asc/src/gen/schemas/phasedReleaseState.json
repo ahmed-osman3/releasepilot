@@ -1,5 +1,0 @@
-{
-  "type": "string",
-  "enum": ["INACTIVE", "ACTIVE", "PAUSED", "COMPLETE"],
-  "x-readme-ref-name": "PhasedReleaseState"
-}

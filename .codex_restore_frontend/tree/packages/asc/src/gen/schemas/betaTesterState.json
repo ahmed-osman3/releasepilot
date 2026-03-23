@@ -1,5 +1,0 @@
-{
-  "type": "string",
-  "enum": ["NOT_INVITED", "INVITED", "ACCEPTED", "INSTALLED", "REVOKED"],
-  "x-readme-ref-name": "BetaTesterState"
-}
